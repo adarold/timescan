@@ -61,8 +61,6 @@ void fitter::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
-      if(nevents>3){ //If the condition is not satisfied, the histogram would be filled with points where there is not
-                     //enough statistics and therefore the fitting procedure is biassed
       values v_val;
 
       for(int i=0; i<230; i++){
@@ -96,8 +94,6 @@ void fitter::Loop()
 
       overall[rawid] = v_val;
 
-      }
- 
    }
 
    gStyle->SetOptFit(0);
