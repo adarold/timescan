@@ -58,9 +58,6 @@ fitter::fitter(string path) : fChain(0), filepath(path)
 // used to generate this class and read the Tree.
    if (tree == 0) {
 
-//##########################################################################################//
-//                    PUT THE PATH TO YOUR event.root FILE BELOW
-//#########################################################################################//                    
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject((path+"/event.root").c_str());
       if (!f || !f->IsOpen()) {
          f = new TFile((path+"/event.root").c_str());
