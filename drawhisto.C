@@ -37,6 +37,9 @@ void drawhisto() {
       TH2F * h_ep_chi_tomean_inout = (TH2F*)f->Get("h_ep_chi_tomean_inout");
       TH2F * h_em_chi_tomean_inout = (TH2F*)f->Get("h_em_chi_tomean_inout");
 
+      TH2F * h_nevents_b = (TH2F*)f->Get("h_nevents_b");
+      TH2F * h_nevents_em = (TH2F*)f->Get("h_nevents_em");
+      TH2F * h_nevents_ep = (TH2F*)f->Get("h_nevents_ep");
 
    //Draws histograms
 
@@ -523,7 +526,7 @@ void drawhisto() {
    ratio_ep->GetYaxis()->SetTitle("iy");
    ratio_ep->SetTitle("Endcap +side #chi^{2}_{to mean} / #chi^{2}");
    ratio_ep->SetMinimum(1.);
-   ratio_ep->SetMaximum(5.);
+   ratio_ep->SetMaximum(8.);
    ratio_ep->Draw("colz");
    c13->cd(2);
    ratio_em->GetXaxis()->SetTitleSize(0.06);
@@ -550,7 +553,7 @@ void drawhisto() {
    ratio_ep_inout->GetYaxis()->SetTitle("iy");
    ratio_ep_inout->SetTitle("Endcap +side #chi^{2}_{to mean} / #chi^{2} - IN OUT");
    ratio_ep_inout->SetMinimum(1.);
-   ratio_ep_inout->SetMaximum(5.);
+   ratio_ep_inout->SetMaximum(8.);
    ratio_ep_inout->Draw("colz");
    c13_bis->cd(2);
    ratio_em_inout->GetXaxis()->SetTitleSize(0.06);
@@ -563,6 +566,51 @@ void drawhisto() {
    ratio_em_inout->SetMinimum(1.);
    ratio_em_inout->SetMaximum(5.);
    ratio_em_inout->Draw("colz");
+
+
+
+   TCanvas * c14 = new TCanvas("c14","c14",0,0,1600,1000);
+   c14->cd();
+   h_nevents_b->SetMinimum(2.);
+   h_nevents_b->SetMaximum(25.);
+   h_nevents_b->GetXaxis()->SetTitleSize(0.06);
+   h_nevents_b->GetXaxis()->SetTitleOffset(0.7);
+   h_nevents_b->GetYaxis()->SetTitleSize(0.06);
+   h_nevents_b->GetYaxis()->SetTitleOffset(0.7);
+   h_nevents_b->GetXaxis()->SetTitle("i#phi");
+   h_nevents_b->GetYaxis()->SetTitle("i#eta");
+   h_nevents_b->SetTitle("Barrel crystals - Number of delays");
+   h_nevents_b->Draw("COLZ");
+
+
+
+   TCanvas * c15 = new TCanvas("c15","c15",0,0,1000,1000);
+   c15->cd();
+   h_nevents_em->SetMinimum(0.);
+   h_nevents_em->SetMaximum(25.);
+   h_nevents_em->GetXaxis()->SetTitleSize(0.06);
+   h_nevents_em->GetXaxis()->SetTitleOffset(0.7);
+   h_nevents_em->GetYaxis()->SetTitleSize(0.06);
+   h_nevents_em->GetYaxis()->SetTitleOffset(0.7);
+   h_nevents_em->GetXaxis()->SetTitle("i#phi");
+   h_nevents_em->GetYaxis()->SetTitle("i#eta");
+   h_nevents_em->SetTitle("Endcap crystals -side - Number of delays");
+   h_nevents_em->Draw("COLZ");
+
+
+
+   TCanvas * c16 = new TCanvas("c16","c16",0,0,1000,1000);
+   c16->cd();
+   h_nevents_ep->SetMinimum(0.);
+   h_nevents_ep->SetMaximum(25.);
+   h_nevents_ep->GetXaxis()->SetTitleSize(0.06);
+   h_nevents_ep->GetXaxis()->SetTitleOffset(0.7);
+   h_nevents_ep->GetYaxis()->SetTitleSize(0.06);
+   h_nevents_ep->GetYaxis()->SetTitleOffset(0.7);
+   h_nevents_ep->GetXaxis()->SetTitle("i#phi");
+   h_nevents_ep->GetYaxis()->SetTitle("i#eta");
+   h_nevents_ep->SetTitle("Endcap crystals +side - Number of delays");
+   h_nevents_ep->Draw("COLZ");
 
 
 
@@ -582,5 +630,8 @@ void drawhisto() {
    c12->SaveAs("plots/barrel_ratio_chi2.jpg");
    c13->SaveAs("plots/endcap_ratio_chi2.jpg");
    c13_bis->SaveAs("plots/endcap_ratio_chi2_inout.jpg");
+   c14->SaveAs("plots/nevents_b.pdf");
+   c15->SaveAs("plots/nevents_em.pdf");
+   c16->SaveAs("plots/nevents_ep.pdf");
 
 }

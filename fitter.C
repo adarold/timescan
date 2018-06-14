@@ -61,6 +61,8 @@ void fitter::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
+      if(nevents>3){ //If the condition is not satisfied, the histogram would be filled with points where there is not
+                     //enough statistics and therefore the fitting procedure is biassed
       values v_val;
 
       for(int i=0; i<230; i++){
@@ -94,6 +96,8 @@ void fitter::Loop()
 
       overall[rawid] = v_val;
 
+      }
+ 
    }
 
    gStyle->SetOptFit(0);
@@ -140,12 +144,48 @@ void fitter::Loop()
    float tot_events=0.;
    int bi=0;
    int black_list[npt];
+   double xx;
+   double yy;
+
+   TH2F * h_nevents_b = new TH2F("h_nevents_b","h_nevents_b",360,0,360,86*2,-86,86);
+   TH2F * h_nevents_em = new TH2F("h_nevents_em","h_nevents_em",100,0,100,100,0,100);
+   TH2F * h_nevents_ep = new TH2F("h_nevents_ep","h_nevents_ep",100,0,100,100,0,100);
+
 
    //Loop on all crystals to fit all the distributions and get the parameters
    for(int i=0; i<npt; i++){
 
+      //Retrieves crystal coordinates
+      if(rawid_value[i]<839000000){
+         cry_x[i]=iphi(rawid_value[i]);
+         cry_y[i]=ieta(rawid_value[i]);
+         cry_z[i]=zside(rawid_value[i]);
+      }else{
+         cry_x[i]=ix(rawid_value[i]);
+         cry_y[i]=iy(rawid_value[i]);
+         cry_z[i]=iz(rawid_value[i]);
+      }
+
       //Define TGraph with all the shape points
       TGraphErrors * g = new TGraphErrors(10*n_delays, overall[rawid_value[i]].val_x, overall[rawid_value[i]].val_y, overall[rawid_value[i]].val_ex, overall[rawid_value[i]].val_ey);
+
+      //Check how many empty points (scan delay for which no data are recorded) are there for each crystal
+      nevents=0; //reset variable
+
+      for(int l=114; l<=136; l++){
+         g->GetPoint(l, xx, yy);
+         if(yy>0.01) nevents++;
+      }
+      
+      if(rawid_value[i]<839000000){
+         h_nevents_b->Fill(cry_x[i], cry_y[i], nevents); 
+      }else{
+         if(cry_z[i]==-1){
+         h_nevents_em->Fill(cry_x[i], cry_y[i], nevents); 
+         }else{
+         h_nevents_ep->Fill(cry_x[i], cry_y[i], nevents); 
+         }
+      }
 
       //Construct and inizialise alpha-beta function and its parameters
       TF1 *function_alphabeta = new TF1("function_alphabeta", alphabeta, -11, 236, 4);
@@ -160,8 +200,8 @@ void fitter::Loop()
             function_alphabeta->SetParameter (0, 0.242);    // A
             function_alphabeta->SetParLimits (0, 0, 1);    // A
             function_alphabeta->SetParameter (1, 124.3);   // t_0    
-            function_alphabeta->SetParameter (2, 1.68);   // alpha
-            function_alphabeta->SetParameter (3, 40.5);   // beta
+            function_alphabeta->SetParameter (2, 1.66);   // alpha
+            function_alphabeta->SetParameter (3, 40.6);   // beta
 
          }else{
 
@@ -169,7 +209,7 @@ void fitter::Loop()
             function_alphabeta->SetParLimits (0, 0, 1);    // A
             function_alphabeta->SetParameter (1, 121.6);   // t_0    
             function_alphabeta->SetParameter (2, 1.45);   // alpha
-            function_alphabeta->SetParameter (3, 37.7);   // beta
+            function_alphabeta->SetParameter (3, 37.8);   // beta
 
          }
 
@@ -184,17 +224,6 @@ void fitter::Loop()
          alpha[i] = function_alphabeta->GetParameter(2);
          beta[i] = function_alphabeta->GetParameter(3);
          chi[i] = (function_alphabeta->GetChisquare() / (1.0*function_alphabeta->GetNDF()) );
-
-         //Retrieves crystal coordinates
-         if(rawid_value[i]<839000000){
-            cry_x[i]=iphi(rawid_value[i]);
-            cry_y[i]=ieta(rawid_value[i]);
-            cry_z[i]=zside(rawid_value[i]);
-         }else{
-            cry_x[i]=ix(rawid_value[i]);
-            cry_y[i]=iy(rawid_value[i]);
-            cry_z[i]=iz(rawid_value[i]);
-         }
 
       }else{ //Fit not converged, check if it happens because the tgraph is void
 
@@ -599,6 +628,10 @@ if(black_list_test==0) cout << rawid_value[i] << endl;
       h_ep_chi_tomean->Write("",TObject::kOverwrite);
       h_em_chi_tomean_inout->Write("",TObject::kOverwrite);
       h_ep_chi_tomean_inout->Write("",TObject::kOverwrite);
+
+      h_nevents_b->Write("",TObject::kOverwrite);
+      h_nevents_em->Write("",TObject::kOverwrite);
+      h_nevents_ep->Write("",TObject::kOverwrite);
 
    f->Close();
    
