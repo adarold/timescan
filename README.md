@@ -48,6 +48,7 @@ The script reads all the pulse shapes obtained by the timeshape_analysis script 
 - meanpar.txt where the mean values for the fit parameters for barrel and endcaps (and inner part and outer part of them) are saved
 - everycrystal_par.txt where the points of the fitted shapes are saved for each crystal
 - histograms.root where all the histograms are created and stored
+
 Contour plots for the alpha beta fitting parameters are produced for some crystals (10 random crystals); this option can be changed according to available space and needs.
 
 2.3.1) Additional features
