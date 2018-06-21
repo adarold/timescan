@@ -48,6 +48,11 @@ The script reads all the pulse shapes obtained by the timeshape_analysis script 
 - meanpar.txt where the mean values for the fit parameters for barrel and endcaps (and inner part and outer part of them) are saved
 - everycrystal_par.txt where the points of the fitted shapes are saved for each crystal
 - histograms.root where all the histograms are created and stored
+Contour plots for the alpha beta fitting parameters are produced for some crystals (10 random crystals); this option can be changed according to available space and needs.
+
+2.3.1) Additional features
+
+It is possible to fit the shapes using as starting parameters the average values of the fitted parameters in eta rings. To do so, a fitting procedure in the "standard" way must be done (setting manually the initial parameters) and then run the script ringpar.C exploiting the everycrystal_par.txt file that has been created. In this way, three .txt files are created (etaring_barrel.txt, etaring_endcapp.txt and etaring_endcapm.txt) with the averaged parameters in terms of etaring. It is possible to use these parameters as starting points for the fitting procedure or as fixed parameters to see the dependences on the other paramters of the function.
   
 2.4) Draw histograms
 
