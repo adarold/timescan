@@ -61,7 +61,7 @@ void fitter::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
-      if(nevents>3){ //If the condition is not satisfied, the histogram would be filled with points where there is not
+      if(nevents>1){ //If the condition is not satisfied, the histogram would be filled with points where there is not
                      //enough statistics and therefore the fitting procedure is biassed
       values v_val;
 
@@ -115,6 +115,64 @@ void fitter::Loop()
    txt_rawid.close();
 
 
+   //Open txt file with mean fit parameters for eta rings for barrel and endcaps
+   int eta[171];
+   float A_b_etaring[171];
+   float t_0_b_etaring[171];
+   float alpha_b_etaring[171];
+   float beta_b_etaring[171];
+   int eta_npt=0;
+
+   ifstream txt_etabarrel;
+   txt_etabarrel.open("etaring_barrel.txt");
+
+   while ( kTRUE ) {
+      txt_etabarrel >> eta[eta_npt] >> A_b_etaring[eta_npt] >> t_0_b_etaring[eta_npt] >> alpha_b_etaring[eta_npt] >> beta_b_etaring[eta_npt];
+      if ( ! txt_etabarrel.good() ) break;
+      eta_npt++;
+   }
+
+   txt_etabarrel.close();
+
+
+   int radius_p[40];
+   float A_ep_etaring[40];
+   float t_0_ep_etaring[40];
+   float alpha_ep_etaring[40];
+   float beta_ep_etaring[40];
+   int etaep_npt=0;
+
+   ifstream txt_etaendcapp;
+   txt_etaendcapp.open("etaring_endcapp.txt");
+
+   while ( kTRUE ) {
+      txt_etaendcapp >> radius_p[etaep_npt] >> A_ep_etaring[etaep_npt] >> t_0_ep_etaring[etaep_npt] >> alpha_ep_etaring[etaep_npt] >> beta_ep_etaring[etaep_npt];
+      if ( ! txt_etaendcapp.good() ) break;
+      etaep_npt++;
+   }
+
+   txt_etaendcapp.close();
+
+
+   int radius_m[40];
+   float A_em_etaring[40];
+   float t_0_em_etaring[40];
+   float alpha_em_etaring[40];
+   float beta_em_etaring[40];
+   int etaem_npt=0;
+
+   ifstream txt_etaendcapm;
+   txt_etaendcapm.open("etaring_endcapm.txt");
+
+   while ( kTRUE ) {
+      txt_etaendcapm >> radius_m[etaem_npt] >> A_em_etaring[etaem_npt] >> t_0_em_etaring[etaem_npt] >> alpha_em_etaring[etaem_npt] >> beta_em_etaring[etaem_npt];
+      if ( ! txt_etaendcapm.good() ) break;
+      etaem_npt++;
+   }
+
+   txt_etaendcapm.close();
+
+
    //Establishes the number of barrel and endcaps crystals
    int n_barrel=0;
    int n_endcap=0;
@@ -146,6 +204,21 @@ void fitter::Loop()
    int black_list[npt];
    double xx;
    double yy;
+   double A_mean=0;
+   double t_0_mean=0;
+   double t_0_err=0;
+   double alpha_mean=0;
+   double alpha_err=0;
+   double beta_mean=0;
+   double beta_err=0;
+   int nstep=40;
+   double t_0_step=0;
+   double alpha_step=0;
+   double beta_step=0;
+   int nu=0;
+   int index=0;
+   float calc_radius=0;
+
 
    TH2F * h_nevents_b = new TH2F("h_nevents_b","h_nevents_b",360,0,360,86*2,-86,86);
    TH2F * h_nevents_em = new TH2F("h_nevents_em","h_nevents_em",100,0,100,100,0,100);
@@ -176,7 +249,7 @@ void fitter::Loop()
          g->GetPoint(l, xx, yy);
          if(yy>0.01) nevents++;
       }
-      
+
       if(rawid_value[i]<839000000){
          h_nevents_b->Fill(cry_x[i], cry_y[i], nevents); 
       }else{
@@ -200,21 +273,141 @@ void fitter::Loop()
             function_alphabeta->SetParameter (0, 0.242);    // A
             function_alphabeta->SetParLimits (0, 0, 1);    // A
             function_alphabeta->SetParameter (1, 124.3);   // t_0    
-            function_alphabeta->SetParameter (2, 1.66);   // alpha
-            function_alphabeta->SetParameter (3, 40.6);   // beta
+
+            //Initialise parameters with etaring mean parameters. Fitting procedure with fixed alpha and beta value can be implemented
+            //imposing "FixParameter" instead of "SetParameter".
+            index=cry_y[i]+85;
+            function_alphabeta->SetParameter (2, alpha_b_etaring[index]);
+            function_alphabeta->SetParameter (3, beta_b_etaring[index]);
 
          }else{
 
             function_alphabeta->SetParameter (0, 0.232);    // A
             function_alphabeta->SetParLimits (0, 0, 1);    // A
             function_alphabeta->SetParameter (1, 121.6);   // t_0    
-            function_alphabeta->SetParameter (2, 1.45);   // alpha
-            function_alphabeta->SetParameter (3, 37.8);   // beta
+
+            //Initialise parameters with etaring mean parameters. Fitting procedure with fixed alpha and beta value can be implemented
+            //imposing "FixParameter" instead of "SetParameter".
+            calc_radius=sqrt(TMath::Power(cry_x[i]-50.5,2)+TMath::Power(cry_y[i]-50.5,2));
+
+            for(int kk=0; kk<40; kk++){
+
+               if(calc_radius>radius_p[kk] && calc_radius<radius_p[kk]+1){
+
+                  if(cry_z[i]==+1){
+                  
+                     function_alphabeta->SetParameter (2, alpha_ep_etaring[kk]);
+                     function_alphabeta->SetParameter (3, beta_ep_etaring[kk]);
+
+                  }else{
+
+                     function_alphabeta->SetParameter (2, alpha_em_etaring[kk]);
+                     function_alphabeta->SetParameter (3, beta_em_etaring[kk]);
+
+                  }
+
+               }
+
+            }
 
          }
 
       g->Fit("function_alphabeta","RQM","",-11,236);
       fitStatus =  g->Fit("function_alphabeta","RQM","",-11,236); //Checks the result of the fit
+
+
+      //Contour plots for variation of two fitted parameters at a time: alpha vs beta, alpha vs t_0 and t_0 vs beta. The parameters
+      //are scanned in the region from 1 standard deviation from the mean fitted value.
+
+      //DUMMY: saves only some histograms at random (one every 7000) can be changed according to available space and needs. 
+      if(i==nu*7000){
+      nu++;
+
+      A_mean=function_alphabeta->GetParameter(0);
+      t_0_mean=function_alphabeta->GetParameter(1);
+      t_0_err=function_alphabeta->GetParError(1);
+      alpha_mean=function_alphabeta->GetParameter(2);
+      alpha_err=function_alphabeta->GetParError(2);
+      beta_mean=function_alphabeta->GetParameter(3);
+      beta_err=function_alphabeta->GetParError(3);
+
+      nstep=40;
+      t_0_step=t_0_err/(0.5*nstep);
+      alpha_step=alpha_err/(0.5*nstep);
+      beta_step=beta_err/(0.5*nstep);
+
+      TH2F * h_alpha_beta = new TH2F("h_alpha_beta","h_alpha_beta",nstep,alpha_mean-alpha_err,alpha_mean+alpha_err,nstep,beta_mean-beta_err,beta_mean+beta_err);
+      TH2F * h_alpha_t_0 = new TH2F("h_alpha_t_0","h_alpha_t_0",nstep,alpha_mean-alpha_err,alpha_mean+alpha_err,nstep,t_0_mean-t_0_err,t_0_mean+t_0_err);
+      TH2F * h_t_0_beta = new TH2F("h_t_0_beta","h_t_0_beta",nstep,t_0_mean-t_0_err,t_0_mean+t_0_err,nstep,beta_mean-beta_err,beta_mean+beta_err);
+
+      for(int ii=0; ii<nstep; ii++){
+
+         for(int jj=0; jj<nstep; jj++){
+
+            TF1 *function_alpha_beta_temp = new TF1("function_alpha_beta_temp", alphabeta, -11, 236, 4);
+            TF1 *function_alpha_t_0_temp = new TF1("function_alpha_t_0_temp", alphabeta, -11, 236, 4);
+            TF1 *function_t_0_beta_temp = new TF1("function_t_0_beta_temp", alphabeta, -11, 236, 4);
+
+            function_alpha_beta_temp->FixParameter(0,A_mean);
+            function_alpha_beta_temp->FixParameter(1,t_0_mean);
+            function_alpha_beta_temp->FixParameter(2,(alpha_mean-alpha_err)+alpha_step*0.5+ii*alpha_step);
+            function_alpha_beta_temp->FixParameter(3,(beta_mean-beta_err)+beta_step*0.5+jj*beta_step);
+
+            function_alpha_t_0_temp->FixParameter(0,A_mean);
+            function_alpha_t_0_temp->FixParameter(1,(t_0_mean-t_0_err)+t_0_step*0.5+jj*t_0_step);
+            function_alpha_t_0_temp->FixParameter(2,(alpha_mean-alpha_err)+alpha_step*0.5+ii*alpha_step);
+            function_alpha_t_0_temp->FixParameter(3,beta_mean);
+
+            function_t_0_beta_temp->FixParameter(0,A_mean);
+            function_t_0_beta_temp->FixParameter(1,(t_0_mean-t_0_err)+t_0_step*0.5+ii*t_0_step);
+            function_t_0_beta_temp->FixParameter(2,alpha_mean);
+            function_t_0_beta_temp->FixParameter(3,(beta_mean-beta_err)+beta_step*0.5+jj*beta_step);
+
+            g->Fit("function_alpha_beta_temp","RQM","",-11,236);
+            h_alpha_beta->Fill(function_alpha_beta_temp->GetParameter(2),function_alpha_beta_temp->GetParameter(3),function_alpha_beta_temp->GetChisquare());
+            delete function_alpha_beta_temp;
+
+            g->Fit("function_alpha_t_0_temp","RQM","",-11,236);
+            h_alpha_t_0->Fill(function_alpha_t_0_temp->GetParameter(2),function_alpha_t_0_temp->GetParameter(1),function_alpha_t_0_temp->GetChisquare());
+            delete function_alpha_t_0_temp;
+
+            g->Fit("function_t_0_beta_temp","RQM","",-11,236);
+            h_t_0_beta->Fill(function_t_0_beta_temp->GetParameter(1),function_t_0_beta_temp->GetParameter(3),function_t_0_beta_temp->GetChisquare());
+            delete function_t_0_beta_temp;
+ 
+         }
+      }
+
+
+      //Saves the graphs
+
+      TCanvas * c2 = new TCanvas("c2","c2",0,0,1500,500);
+      c2->Divide(3,1);
+      c2->cd(1);
+      h_alpha_beta->SetTitle("Alpha vs Beta");
+      h_alpha_beta->GetXaxis()->SetTitle("Alpha");
+      h_alpha_beta->GetYaxis()->SetTitle("Beta");
+      h_alpha_beta->Draw("COLZ");
+      c2->cd(2);
+      h_alpha_t_0->SetTitle("Alpha vs t_0");
+      h_alpha_t_0->GetXaxis()->SetTitle("Alpha");
+      h_alpha_t_0->GetYaxis()->SetTitle("t_{0}");
+      h_alpha_t_0->Draw("COLZ");
+      c2->cd(3);
+      h_t_0_beta->SetTitle("t_0 vs Beta");
+      h_t_0_beta->GetXaxis()->SetTitle("t_{0}");
+      h_t_0_beta->GetYaxis()->SetTitle("Beta");
+      h_t_0_beta->Draw("COLZ");
+ 
+      sprintf (path, "plots/maps_%d.pdf",rawid_value[i]);
+      c2->SaveAs(path);
+
+      delete h_alpha_beta;
+      delete h_alpha_t_0;
+      delete h_t_0_beta;
+      delete c2;
+
+      }
 
       //Check fit convergence and saves parameters. If the fit failed, an error message is displayed.
       if(fitStatus==4000){
@@ -258,7 +451,7 @@ void fitter::Loop()
    ofstream txt_par;
    txt_par.open ("everycrystal_par.txt");
 
-      txt_par << "crystal rawid" << "\t" << " A " << "\t" << " t_0 " << "\t" << " alpha " << "\t" << " beta " << endl;
+     // txt_par << "crystal rawid" << "\t" << " A " << "\t" << " t_0 " << "\t" << " alpha " << "\t" << " beta " << endl;
 
       for(int i=0; i<npt; i++){
          
