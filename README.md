@@ -50,11 +50,11 @@ The script reads all the pulse shapes obtained by the timeshape_analysis script 
 - histograms.root where all the histograms are created and stored
 
 At the beginning of the program a variable must be set to decide in which way to fit the crystals:
-standard     = starting fit parameters are set manually at a certain value
-etaring      = starting fit parameters are set exploting external files with etaring parameters
-etaring_fix  = alpha and beta parameters are FIXED according to external files with etaring parameters
-producer     = starting fit parameters are set exploting external files with parameters divided by crystal producer
-producer_fix = alpha and beta parameters are FIXED exploting external files with parameters divided by crystal producer                
+- standard     = starting fit parameters are set manually at a certain value
+- etaring      = starting fit parameters are set exploting external files with etaring parameters
+- etaring_fix  = alpha and beta parameters are FIXED according to external files with etaring parameters
+- producer     = starting fit parameters are set exploting external files with parameters divided by crystal producer
+- producer_fix = alpha and beta parameters are FIXED exploting external files with parameters divided by crystal producer                
 The etaring and producer options needs additional external files to run (see next subsection).
 
 Contour plots for the alpha beta fitting parameters are produced for some crystals (10 random crystals); this option can be changed according to available space and needs.
