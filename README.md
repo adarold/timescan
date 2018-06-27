@@ -21,7 +21,7 @@ The datasets can be found at:
 
 and subsequent folders, the analysed data are from run 305746 to run 305757. To run the analysis using multiple crab jobs, the code multicrab.py with the samples.py file can be used (code from Andrea Massironi that can be found at https://github.com/amassiro/EcalWeights/tree/master/TimeScan).
 
-The standard code to retrieve the ntuples does not create a branch for the lumisection. To create ntuples with also this information, use the modified files PulseDump.cc and PulseDump.h presented in this page. They must replace the standard ones in: CMSSW_9_2_7/src/EcalReconstruction/EcalTools/plugins .
+The standard code to retrieve the ntuples does not create a branch for the lumisection. To create ntuples with also this information, use the modified files PulseDump.cc and PulseDump.h presented in this page. They must replace the standard ones in: CMSSW_9_2_7/src/EcalReconstruction/EcalTools/plugins . The path in the process source of the file pulsedump_physymm_lonebunch.py must be changed according to the location of the datasets.
 
 The resulting ntuples (~39G) can be found (at least at the moment) at:
 
