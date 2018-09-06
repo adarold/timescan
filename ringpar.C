@@ -37,8 +37,6 @@ void ringpar(){
       npt++;
    }
 
-   //Ci sono 74862 total crytals e 60493 barrel e quindi 14369 endcap
-
    txt_par.close();
 
 

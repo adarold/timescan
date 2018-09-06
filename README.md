@@ -21,7 +21,7 @@ The datasets can be found at:
 
 and subsequent folders, the analysed data are from run 305746 to run 305757. To run the analysis using multiple crab jobs, the code multicrab.py with the samples.py file can be used (code from Andrea Massironi that can be found at https://github.com/amassiro/EcalWeights/tree/master/TimeScan).
 
-The standard code to retrieve the ntuples does not create a branch for the lumisection. To create ntuples with also this information, use the modified files PulseDump.cc and PulseDump.h presented in this page. They must replace the standard ones in: CMSSW_9_2_7/src/EcalReconstruction/EcalTools/plugins .
+The standard code to retrieve the ntuples does not create a branch for the lumisection. To create ntuples with also this information, use the modified files PulseDump.cc and PulseDump.h presented in this page. They must replace the standard ones in: CMSSW_9_2_7/src/EcalReconstruction/EcalTools/plugins . The path in the process source of the file pulsedump_physymm_lonebunch.py must be changed according to the location of the datasets.
 
 The resulting ntuples (~39G) can be found (at least at the moment) at:
 
@@ -48,6 +48,23 @@ The script reads all the pulse shapes obtained by the timeshape_analysis script 
 - meanpar.txt where the mean values for the fit parameters for barrel and endcaps (and inner part and outer part of them) are saved
 - everycrystal_par.txt where the points of the fitted shapes are saved for each crystal
 - histograms.root where all the histograms are created and stored
+
+At the beginning of the program a variable must be set to decide in which way to fit the crystals:
+- standard     = starting fit parameters are set manually at a certain value
+- etaring      = starting fit parameters are set exploting external files with etaring parameters
+- etaring_fix  = alpha and beta parameters are FIXED according to external files with etaring parameters
+- producer     = starting fit parameters are set exploting external files with parameters divided by crystal producer
+- producer_fix = alpha and beta parameters are FIXED exploting external files with parameters divided by crystal producer
+
+The etaring and producer options needs additional external files to run (see next subsection).
+
+Contour plots for the alpha beta fitting parameters are produced for some crystals (10 random crystals); this option can be changed according to available space and needs.
+
+2.3.1) Additional features
+
+It is possible to fit the shapes using as starting parameters the average values of the fitted parameters in eta rings. To do so, a fitting procedure in the "standard" way must be done (setting manually the initial parameters) and then run the script ringpar.C exploiting the everycrystal_par.txt file that has been created. In this way, three .txt files are created (etaring_barrel.txt, etaring_endcapp.txt and etaring_endcapm.txt) with the averaged parameters in terms of etaring. It is possible to use these parameters as starting points for the fitting procedure or as fixed parameters to see the dependences on the other parameters of the function.
+
+In the same way, it is possible to perfom a fitting procedure that is dependent on the trigger towers. To do so, run the triggertower.C script where as input the everycrystal_par.txt file must be provided. This will produce a txt file called triggertower_info.txt. Then, runnnin the fitter.C script with the option "triggertower_fix" will provide the distribution of the parameters divided by trigger towers. Running then the trun.C script will produce the maps with the maximum time displacement from the average value of peaking time into a trigger tower and a single crystal peaking time. 
   
 2.4) Draw histograms
 
