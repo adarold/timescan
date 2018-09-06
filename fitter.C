@@ -8,6 +8,7 @@
 #include "TGraphErrors.h"
 #include "TF1.h"
 #include "TMath.h"
+#include "TLine.h"
 
 double alphabeta(double* x, double*p){
 
@@ -35,8 +36,23 @@ int iy(int id) { return id&0x7F; }
 
 void fitter::Loop()
 {
-
    if (fChain == 0) return;
+
+   //###############################################################################################################################
+   //#                                                                                                                            ##
+   //#                                                     RUNNING OPTIONS                                                        ##
+   //#                                                                                                                            ##
+   //# Fitting can be done in different ways:                                                                                     ##
+   //# standard     = starting fit parameters are set manually at a certain value                                                 ##
+   //# etaring      = starting fit parameters are set exploting external files with etaring parameters                            ##
+   //# etaring_fix  = alpha and beta parameters are FIXED according to external files with etaring parameters                     ##
+   //# producer     = starting fit parameters are set exploting external files with parameters divided by crystal producer        ##
+   //# producer_fix = alpha and beta parameters are FIXED exploting external files with parameters divided by crystal producer    ##
+   //# triggertower_fix = alpha and beta parameters are FIXED exploting external files with parameters divided by trigger towers  ## 
+   //#                                                                                                                            ##
+   //###############################################################################################################################
+
+   string setting = "standard";
 
    //Variables
    int  n_delays=23;
@@ -44,6 +60,7 @@ void fitter::Loop()
    int  npt=0;
    int  nchi=0;
    char path[100];
+   char title[100];
 
    //Preliminary operations
 
@@ -96,7 +113,7 @@ void fitter::Loop()
 
       overall[rawid] = v_val;
 
-      }
+      }//QUESTA
  
    }
 
@@ -115,7 +132,7 @@ void fitter::Loop()
    txt_rawid.close();
 
 
-   //Open txt file with mean fit parameters for eta rings for barrel and endcaps
+   //Open txt file with mean fit parameters for eta rings
    int eta[171];
    float A_b_etaring[171];
    float t_0_b_etaring[171];
@@ -173,6 +190,110 @@ void fitter::Loop()
    txt_etaendcapm.close();
 
 
+   //Open the file with the parameters for crystal producers
+   int prod_npt=0;
+   int prod_rawid[npt];
+   float prod_A[npt];
+   float prod_t_0[npt];
+   float prod_alpha[npt];
+   float prod_beta[npt];
+
+   ifstream txt_producer;
+   txt_producer.open("producer_info.txt");
+
+   while ( kTRUE ) {
+      txt_producer >> prod_rawid[prod_npt] >> prod_A[prod_npt] >> prod_t_0[prod_npt] >> prod_alpha[prod_npt] >> prod_beta[prod_npt];
+      if ( ! txt_producer.good() ) break;
+      prod_npt++;
+   }
+
+   txt_producer.close();
+
+   struct valuesp {float valp[4];};
+   map<int, valuesp> m_p;
+   valuesp v_valp;
+
+   for(int i=0; i<prod_npt; i++){
+
+      v_valp.valp[0]=prod_A[i];
+      v_valp.valp[1]=prod_t_0[i];
+      v_valp.valp[2]=prod_alpha[i];
+      v_valp.valp[3]=prod_beta[i];
+
+      m_p[prod_rawid[i]]=v_valp;
+
+   }
+
+
+   //Open the file with the parameters for the supermodules
+   int super_npt=0;
+   int super_rawid[npt];
+   float super_A[npt];
+   float super_t_0[npt];
+   float super_alpha[npt];
+   float super_beta[npt];
+
+   ifstream txt_supermod;
+   txt_supermod.open("supermodule_info.txt");
+
+   while ( kTRUE ) {
+      txt_supermod >> super_rawid[super_npt] >> super_A[super_npt] >> super_t_0[super_npt] >> super_alpha[super_npt] >> super_beta[super_npt];
+      if ( ! txt_supermod.good() ) break;
+      super_npt++;
+   }
+
+   txt_supermod.close();
+
+   struct valuess {float vals[4];};
+   map<int, valuess> m_s;
+   valuess v_vals;
+
+   for(int i=0; i<super_npt; i++){
+
+      v_vals.vals[0]=super_A[i];
+      v_vals.vals[1]=super_t_0[i];
+      v_vals.vals[2]=super_alpha[i];
+      v_vals.vals[3]=super_beta[i];
+
+      m_s[super_rawid[i]]=v_vals;
+
+   }
+   
+
+   //Open the file with the parameters for the trigger towers
+   int tt_npt=0;
+   int tt_rawid[npt];
+   float tt_A[npt];
+   float tt_t_0[npt];
+   float tt_alpha[npt];
+   float tt_beta[npt];
+
+   ifstream txt_tt;
+   txt_tt.open("triggertower_info.txt");
+
+   while ( kTRUE ) {
+      txt_tt >> tt_rawid[tt_npt] >> tt_A[tt_npt] >> tt_t_0[tt_npt] >> tt_alpha[tt_npt] >> tt_beta[tt_npt];
+      if ( ! txt_tt.good() ) break;
+      tt_npt++;
+   }
+
+   txt_tt.close();
+
+   struct valuest {float valt[4];};
+   map<int, valuest> m_t;
+   valuest v_valt;
+
+   for(int i=0; i<tt_npt; i++){
+
+      v_valt.valt[0]=tt_A[i];
+      v_valt.valt[1]=tt_t_0[i];
+      v_valt.valt[2]=tt_alpha[i];
+      v_valt.valt[3]=tt_beta[i];
+
+      m_t[tt_rawid[i]]=v_valt;
+
+   }
+
    //Establishes the number of barrel and endcaps crystals
    int n_barrel=0;
    int n_endcap=0;
@@ -224,9 +345,11 @@ void fitter::Loop()
    TH2F * h_nevents_em = new TH2F("h_nevents_em","h_nevents_em",100,0,100,100,0,100);
    TH2F * h_nevents_ep = new TH2F("h_nevents_ep","h_nevents_ep",100,0,100,100,0,100);
 
+int nerrors=0;
 
    //Loop on all crystals to fit all the distributions and get the parameters
    for(int i=0; i<npt; i++){
+   //for(int i=55000; i<npt; i++){
 
       //Retrieves crystal coordinates
       if(rawid_value[i]<839000000){
@@ -250,6 +373,7 @@ void fitter::Loop()
          if(yy>0.01) nevents++;
       }
 
+
       if(rawid_value[i]<839000000){
          h_nevents_b->Fill(cry_x[i], cry_y[i], nevents); 
       }else{
@@ -259,6 +383,10 @@ void fitter::Loop()
          h_nevents_ep->Fill(cry_x[i], cry_y[i], nevents); 
          }
       }
+
+      //Request at least two different time scans (so at least 20 points) to fit the shape. This prevents the situation in which
+      //there are just 10 points which could be profoundly different from the nominal situation.
+      if(nevents<2) continue;  
 
       //Construct and inizialise alpha-beta function and its parameters
       TF1 *function_alphabeta = new TF1("function_alphabeta", alphabeta, -11, 236, 4);
@@ -270,24 +398,50 @@ void fitter::Loop()
    
          if(rawid_value[i]<839000000){
 
-            function_alphabeta->SetParameter (0, 0.242);    // A
-            function_alphabeta->SetParLimits (0, 0, 1);    // A
-            function_alphabeta->SetParameter (1, 124.3);   // t_0    
+            if(setting=="standard"){
 
-            //Initialise parameters with etaring mean parameters. Fitting procedure with fixed alpha and beta value can be implemented
-            //imposing "FixParameter" instead of "SetParameter".
+               function_alphabeta->SetParameter (0, 0.242);    // A
+               function_alphabeta->SetParLimits (0, 0, 1);    // A
+               function_alphabeta->SetParameter (1, 124.3);   // t_0    
+               function_alphabeta->SetParameter (2, 1.66);   // alpha
+               function_alphabeta->SetParameter (3, 40.6);   // beta
+
+            }
+
             index=cry_y[i]+85;
-            function_alphabeta->SetParameter (2, alpha_b_etaring[index]);
-            function_alphabeta->SetParameter (3, beta_b_etaring[index]);
+
+            if(setting=="etaring"){
+
+               function_alphabeta->SetParameter (0, A_b_etaring[index]);
+               function_alphabeta->SetParLimits (0, 0, 1);
+               function_alphabeta->SetParameter (1, t_0_b_etaring[index]);
+               function_alphabeta->SetParameter (2, alpha_b_etaring[index]);
+               function_alphabeta->SetParameter (3, beta_b_etaring[index]);
+
+            }
+
+            if(setting=="etaring_fix"){
+
+               function_alphabeta->SetParameter (0, A_b_etaring[index]);
+               function_alphabeta->SetParLimits (0, 0, 1);
+               function_alphabeta->SetParameter (1, t_0_b_etaring[index]);
+               function_alphabeta->FixParameter (2, alpha_b_etaring[index]);
+               function_alphabeta->FixParameter (3, beta_b_etaring[index]);
+
+            }
 
          }else{
 
-            function_alphabeta->SetParameter (0, 0.232);    // A
-            function_alphabeta->SetParLimits (0, 0, 1);    // A
-            function_alphabeta->SetParameter (1, 121.6);   // t_0    
+            if(setting=="standard"){
 
-            //Initialise parameters with etaring mean parameters. Fitting procedure with fixed alpha and beta value can be implemented
-            //imposing "FixParameter" instead of "SetParameter".
+               function_alphabeta->SetParameter (0, 0.232);    // A
+               function_alphabeta->SetParLimits (0, 0, 1);    // A
+               function_alphabeta->SetParameter (1, 121.6);   // t_0    
+               function_alphabeta->SetParameter (2, 1.45);   // alpha
+               function_alphabeta->SetParameter (3, 37.8);   // beta
+
+            }
+
             calc_radius=sqrt(TMath::Power(cry_x[i]-50.5,2)+TMath::Power(cry_y[i]-50.5,2));
 
             for(int kk=0; kk<40; kk++){
@@ -295,14 +449,48 @@ void fitter::Loop()
                if(calc_radius>radius_p[kk] && calc_radius<radius_p[kk]+1){
 
                   if(cry_z[i]==+1){
+
+                     if(setting=="etaring"){
                   
-                     function_alphabeta->SetParameter (2, alpha_ep_etaring[kk]);
-                     function_alphabeta->SetParameter (3, beta_ep_etaring[kk]);
+                        function_alphabeta->SetParameter (0, A_ep_etaring[kk]);
+                        function_alphabeta->SetParLimits (0, 0, 1);
+                        function_alphabeta->SetParameter (1, t_0_ep_etaring[kk]);
+                        function_alphabeta->SetParameter (2, alpha_ep_etaring[kk]);
+                        function_alphabeta->SetParameter (3, beta_ep_etaring[kk]);
+
+                     }
+
+                     if(setting=="etaring_fix"){
+                  
+                        function_alphabeta->SetParameter (0, A_ep_etaring[kk]);
+                        function_alphabeta->SetParLimits (0, 0, 1);
+                        function_alphabeta->FixParameter (1, t_0_ep_etaring[kk]);
+                        function_alphabeta->FixParameter (2, alpha_ep_etaring[kk]);
+                        function_alphabeta->FixParameter (3, beta_ep_etaring[kk]);
+
+                     }
 
                   }else{
 
-                     function_alphabeta->SetParameter (2, alpha_em_etaring[kk]);
-                     function_alphabeta->SetParameter (3, beta_em_etaring[kk]);
+                     if(setting=="etaring"){
+
+                        function_alphabeta->SetParameter (0, A_em_etaring[kk]);
+                        function_alphabeta->SetParLimits (0, 0, 1);
+                        function_alphabeta->SetParameter (1, t_0_em_etaring[kk]);
+                        function_alphabeta->SetParameter (2, alpha_em_etaring[kk]);
+                        function_alphabeta->SetParameter (3, beta_em_etaring[kk]);
+
+                     }
+
+                     if(setting=="etaring_fix"){
+
+                        function_alphabeta->SetParameter (0, A_em_etaring[kk]);
+                        function_alphabeta->SetParLimits (0, 0, 1);
+                        function_alphabeta->FixParameter (1, t_0_em_etaring[kk]);
+                        function_alphabeta->FixParameter (2, alpha_em_etaring[kk]);
+                        function_alphabeta->FixParameter (3, beta_em_etaring[kk]);
+
+                     }
 
                   }
 
@@ -312,17 +500,54 @@ void fitter::Loop()
 
          }
 
+         if(setting=="producer"){
+
+            function_alphabeta->SetParameter (0, m_p[rawid_value[i]].valp[0]);
+            function_alphabeta->SetParLimits (0, 0, 1);
+            function_alphabeta->SetParameter (1, m_p[rawid_value[i]].valp[1]);
+            function_alphabeta->SetParameter (2, m_p[rawid_value[i]].valp[2]);
+            function_alphabeta->SetParameter (3, m_p[rawid_value[i]].valp[3]);
+
+         }
+
+         if(setting=="producer_fix"){
+
+            function_alphabeta->SetParameter (0, m_p[rawid_value[i]].valp[0]);
+            function_alphabeta->SetParLimits (0, 0, 1);
+            function_alphabeta->FixParameter (1, m_p[rawid_value[i]].valp[1]);
+            function_alphabeta->FixParameter (2, m_p[rawid_value[i]].valp[2]);
+            function_alphabeta->FixParameter (3, m_p[rawid_value[i]].valp[3]);
+
+         }
+
+         if(setting=="supermodule_fix"){
+
+            function_alphabeta->SetParameter (0, m_s[rawid_value[i]].vals[0]);
+            function_alphabeta->FixParameter (1, m_s[rawid_value[i]].vals[1]);
+            function_alphabeta->FixParameter (2, m_s[rawid_value[i]].vals[2]);
+            function_alphabeta->FixParameter (3, m_s[rawid_value[i]].vals[3]);
+
+         }
+
+         if(setting=="triggertower_fix"){
+
+            function_alphabeta->SetParameter (0, m_t[rawid_value[i]].valt[0]);
+            function_alphabeta->FixParameter (1, m_t[rawid_value[i]].valt[1]);
+            function_alphabeta->FixParameter (2, m_t[rawid_value[i]].valt[2]);
+            function_alphabeta->FixParameter (3, m_t[rawid_value[i]].valt[3]);
+
+         }
+
+
+
       g->Fit("function_alphabeta","RQM","",-11,236);
       fitStatus =  g->Fit("function_alphabeta","RQM","",-11,236); //Checks the result of the fit
 
 
-      //Contour plots for variation of two fitted parameters at a time: alpha vs beta, alpha vs t_0 and t_0 vs beta. The parameters
-      //are scanned in the region from 1 standard deviation from the mean fitted value.
-
-      //DUMMY: saves only some histograms at random (one every 7000) can be changed according to available space and needs. 
+      //2D parameter plots construction
       if(i==nu*7000){
-      nu++;
 
+      nu++;
       A_mean=function_alphabeta->GetParameter(0);
       t_0_mean=function_alphabeta->GetParameter(1);
       t_0_err=function_alphabeta->GetParError(1);
@@ -380,6 +605,7 @@ void fitter::Loop()
 
 
       //Saves the graphs
+      //gStyle->SetOptFit(0);
 
       TCanvas * c2 = new TCanvas("c2","c2",0,0,1500,500);
       c2->Divide(3,1);
@@ -425,15 +651,7 @@ void fitter::Loop()
             tot_events=tot_events + overall[rawid_value[i]].val_y[l];
 
          }
-
-         if(tot_events==0){ 
-             cout << endl;
-             cout << "The fitting procedure failed for crystal " << rawid_value[i] << " that had no events. This crystal will be discarded." << endl;
-         }else{ 
-             cout << endl;
-             cout << "The fitting procedure failed for crystal " << rawid_value[i] << " even if the crystal had non-zero events. The crystal will be discarded, check again this event." << endl;
-         }
-
+       
          //Save the rawid of the crystal where the fitting procedure failed into a black list
          black_list[bi]=rawid_value[i];
 
@@ -441,7 +659,7 @@ void fitter::Loop()
          bi++;
 
       }
-       
+
       delete g;
       delete function_alphabeta;
 
@@ -460,7 +678,6 @@ void fitter::Loop()
       }
 
    txt_par.close();
-
 
    //Fills the 3d maps and the one dimensional graphs for barrel and endcaps parameters
    TH2F * h_b_chi = new TH2F("h_b_chi","h_b_chi",360,0,360,86*2,-86,86);
