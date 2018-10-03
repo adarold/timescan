@@ -35,7 +35,7 @@ void triggertower(){
 
    //Reads fitted parameters for all the crystals
    ifstream txt_par;
-   txt_par.open("everycrystal_par_OK.txt");
+   txt_par.open("everycrystal_par.txt");
 
    while ( kTRUE ) {
       txt_par >> rawid_value[npt] >> A[npt] >> t_0[npt] >> alpha[npt] >> beta[npt];
@@ -66,15 +66,7 @@ void triggertower(){
    for(int i=0; i<npte; i++){
 
       //There is one key corresponding to one TT
-      if(Fed_e[i]==648){
-
-         key_e=TT_e[i]*1000000 +Fed_e[i];
-
-      }else{
-
-         key_e=0;
-
-      }
+      key_e=TT_e[i]*1000000 +Fed_e[i];
 
       v_vale.vale[0]=key_e;
 
