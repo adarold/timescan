@@ -60,7 +60,8 @@ void tt::Loop()
    int cry_z=0;
 
    ifstream txt_par;
-   txt_par.open("everycrystal_par.txt");
+//   txt_par.open("everycrystal_par.txt");
+   txt_par.open("everycrystal_par_standard.txt");
 
    while ( kTRUE ) {
       txt_par >> rawid_value[npt] >> A[npt] >> t_0[npt] >> alpha[npt] >> beta[npt];
@@ -162,6 +163,25 @@ h_delay->Fill(t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]);
 
    }
 
+   //Output file with TT average of the parameters
+   ofstream txt_ttinfo;
+   txt_ttinfo.open ("triggertower_info.txt");
+
+   for(int i=0; i<npt; i++){
+
+      if(rawid_value[i]<839000000){
+
+      }else{
+
+         key_ret=m_e[rawid_value[i]].vale[0];
+
+            txt_ttinfo << rawid_value[i] << "\t" << m_f[key_ret].valf[1]/m_f[key_ret].valf[0] << "\t" << m_f[key_ret].valf[2]/m_f[key_ret].valf[0] << "\t" << m_f[key_ret].valf[3]/m_f[key_ret].valf[0] << "\t" << m_f[key_ret].valf[4]/m_f[key_ret].valf[0] << endl;
+
+      }
+
+   }
+
+   txt_ttinfo.close();
 
    TH2F * hp = new TH2F("hp","hp",100,0,100,100,0,100);
    TH2F * hm = new TH2F("hm","hm",100,0,100,100,0,100);
