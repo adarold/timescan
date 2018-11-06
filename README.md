@@ -55,6 +55,7 @@ At the beginning of the program a variable must be set to decide in which way to
 - etaring_fix  = alpha and beta parameters are FIXED according to external files with etaring parameters
 - producer     = starting fit parameters are set exploting external files with parameters divided by crystal producer
 - producer_fix = alpha and beta parameters are FIXED exploting external files with parameters divided by crystal producer
+- triggertower_fix = alpha and beta parameters are FIXED exploting external files with parameters divided by trigger towers
 
 The etaring and producer options needs additional external files to run (see next subsection).
 
@@ -64,7 +65,7 @@ Contour plots for the alpha beta fitting parameters are produced for some crysta
 
 It is possible to fit the shapes using as starting parameters the average values of the fitted parameters in eta rings. To do so, a fitting procedure in the "standard" way must be done (setting manually the initial parameters) and then run the script ringpar.C exploiting the everycrystal_par.txt file that has been created. In this way, three .txt files are created (etaring_barrel.txt, etaring_endcapp.txt and etaring_endcapm.txt) with the averaged parameters in terms of etaring. It is possible to use these parameters as starting points for the fitting procedure or as fixed parameters to see the dependences on the other parameters of the function.
 
-In the same way, it is possible to perfom a fitting procedure that is dependent on the trigger towers. To do so, run the triggertower.C script where as input the everycrystal_par.txt file must be provided. This will produce a txt file called triggertower_info.txt. Then, runnnin the fitter.C script with the option "triggertower_fix" will provide the distribution of the parameters divided by trigger towers. Running then the trun.C script will produce the maps with the maximum time displacement from the average value of peaking time into a trigger tower and a single crystal peaking time. 
+In the same way, it is possible to perfom a fitting procedure that is dependent on the trigger towers. To do so, run the trun.C script where as input the everycrystal_par.txt file must be provided. This will produce a txt file called triggertower_info.txt. Then, running the fitter.C script with the option "triggertower_fix" will provide the distribution of the parameters divided by trigger towers. Running then the trun.C script will produce the maps with the maximum time displacement from the average value of peaking time into a trigger tower and a single crystal peaking time. 
   
 2.4) Draw histograms
 
