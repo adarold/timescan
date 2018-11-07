@@ -313,6 +313,10 @@ void fitter::Loop()
    float t_0[npt];
    float alpha[npt];
    float beta[npt];
+   float A_error[npt];
+   float t_0_error[npt];
+   float alpha_error[npt];
+   float beta_error[npt];
    float chi[npt];
    int cry_x[npt]; //In the barrel corresponds to the crystal iphi and in the endcap to the crystal ix
    int cry_y[npt]; //In the barrel corresponds to the crystal ieta and in the endcap to the crystal iy
@@ -544,6 +548,20 @@ int nerrors=0;
       fitStatus =  g->Fit("function_alphabeta","RQM","",-11,236); //Checks the result of the fit
 
 
+gStyle->SetOptStat(1);
+if(i==nu*7000){
+TCanvas * c3 = new TCanvas("c3","c3",0,0,500,500);
+c3->cd();
+g->SetMinimum(-0.05);
+g->SetMaximum(0.3);
+g->Draw("AP");
+function_alphabeta->SetLineColor(kRed);
+function_alphabeta->Draw("same");
+sprintf (path, "/home/darold/html/plot2018b/crystal_%d.pdf",rawid_value[i]);
+c3->SaveAs(path);
+}
+
+
       //2D parameter plots construction
       if(i==nu*7000){
 
@@ -625,7 +643,7 @@ int nerrors=0;
       h_t_0_beta->GetYaxis()->SetTitle("Beta");
       h_t_0_beta->Draw("COLZ");
  
-      sprintf (path, "plots/maps_%d.pdf",rawid_value[i]);
+      sprintf (path, "/home/darold/html/plot2018b/maps_%d.pdf",rawid_value[i]);
       c2->SaveAs(path);
 
       delete h_alpha_beta;
@@ -643,6 +661,11 @@ int nerrors=0;
          alpha[i] = function_alphabeta->GetParameter(2);
          beta[i] = function_alphabeta->GetParameter(3);
          chi[i] = (function_alphabeta->GetChisquare() / (1.0*function_alphabeta->GetNDF()) );
+
+         A_error[i] = function_alphabeta->GetParError(0);
+         t_0_error[i] = function_alphabeta->GetParError(1);
+         alpha_error[i] = function_alphabeta->GetParError(2);
+         beta_error[i] = function_alphabeta->GetParError(3);
 
       }else{ //Fit not converged, check if it happens because the tgraph is void
 
@@ -678,6 +701,17 @@ int nerrors=0;
       }
 
    txt_par.close();
+
+   ofstream txt_par2;
+   txt_par2.open ("everycrystal_par_err.txt");
+
+      for(int i=0; i<npt; i++){
+
+         txt_par2 << rawid_value[i] << "\t" << A[i] << "\t" << A_error[i] << "\t" << t_0[i] << "\t" << t_0_error[i] << "\t" << alpha[i] << "\t" << alpha_error[i] << "\t" << beta[i] << "\t" << beta_error[i] << endl;
+
+      }
+
+   txt_par2.close();
 
    //Fills the 3d maps and the one dimensional graphs for barrel and endcaps parameters
    TH2F * h_b_chi = new TH2F("h_b_chi","h_b_chi",360,0,360,86*2,-86,86);
