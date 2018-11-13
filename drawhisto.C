@@ -1,7 +1,16 @@
-void drawhisto() {
+void drawhisto(string path, int year, int run_condition) {
+
+   string setting = "standard";
+   if (run_condition == 1) setting = "etaring";
+   if (run_condition == 2) setting = "etaring_fix";
+   if (run_condition == 3) setting = "supermodule_fix";
+   if (run_condition == 4) setting = "triggertower_fix";
 
    //Reads histograms from file
-   TFile * f = new TFile("histograms.root");
+   char file_histograms[300];
+   sprintf (file_histograms, "%s/%s_%d_histograms.root", (path).c_str(), (setting).c_str(), year);
+
+   TFile * f = new TFile(file_histograms);
 
       TH1F * h1_b_A = (TH1F*)f->Get("h1_b_A");
       TH1F * h1_b_t_0 = (TH1F*)f->Get("h1_b_t_0");
@@ -569,6 +578,57 @@ void drawhisto() {
 
 
 
+   char p_barrel_chi2[300];
+   sprintf (p_barrel_chi2, "/home/darold/html/shape/%d/%s_barrel_chi2.jpg", year, (setting).c_str());
+   c1->SaveAs(p_barrel_chi2);
+   char p_barrel_parameters[300];
+   sprintf (p_barrel_parameters, "/home/darold/html/shape/%d/%s_barrel_parameters.pdf", year, (setting).c_str());
+   c2->SaveAs(p_barrel_parameters);
+   char p_endcap_m_chi2[300];
+   sprintf (p_endcap_m_chi2, "/home/darold/html/shape/%d/%s_endcap_m_chi2.jpg", year, (setting).c_str());
+   c3->SaveAs(p_endcap_m_chi2);
+   char p_endcap_m_parameters[300];
+   sprintf (p_endcap_m_parameters, "/home/darold/html/shape/%d/%s_endcap_m_parameters.jpg", year, (setting).c_str());
+   c4->SaveAs(p_endcap_m_parameters);
+   char p_endcap_p_chi2[300];
+   sprintf (p_endcap_p_chi2, "/home/darold/html/shape/%d/%s_endcap_p_chi2.jpg", year, (setting).c_str());
+   c5->SaveAs(p_endcap_p_chi2);
+   char p_endcap_p_parameters[300];
+   sprintf (p_endcap_p_parameters, "/home/darold/html/shape/%d/%s_endcap_p_parameters.jpg", year, (setting).c_str());
+   c6->SaveAs(p_endcap_p_parameters);
+   char p_barrel_1d_distribution_parameters[300];
+   sprintf (p_barrel_1d_distribution_parameters, "/home/darold/html/shape/%d/%s_barrel_1d_distribution_parameters.pdf", year, (setting).c_str());
+   c7->SaveAs(p_barrel_1d_distribution_parameters);
+   char p_endcap_1d_distribution_parameters[300];
+   sprintf (p_endcap_1d_distribution_parameters, "/home/darold/html/shape/%d/%s_endcap_1d_distribution_parameters.pdf", year, (setting).c_str());
+   c8->SaveAs(p_endcap_1d_distribution_parameters);
+   char p_barrel_chi2_tomean[300];
+   sprintf (p_barrel_chi2_tomean, "/home/darold/html/shape/%d/%s_barrel_chi2_tomean.jpg", year, (setting).c_str());
+   c9->SaveAs(p_barrel_chi2_tomean);
+   char p_endcap_p_chi2_tomean[300];
+   sprintf (p_endcap_p_chi2_tomean, "/home/darold/html/shape/%d/%s_endcap_p_chi2_tomean.jpg", year, (setting).c_str());
+   c10->SaveAs(p_endcap_p_chi2_tomean);
+   char p_endcap_p_chi2_tomean_inout[300];
+   sprintf (p_endcap_p_chi2_tomean_inout, "/home/darold/html/shape/%d/%s_endcap_p_chi2_tomean_inout.jpg", year, (setting).c_str());
+   c10_bis->SaveAs(p_endcap_p_chi2_tomean_inout);
+   char p_endcap_m_chi2_tomean[300];
+   sprintf (p_endcap_m_chi2_tomean, "/home/darold/html/shape/%d/%s_endcap_m_chi2_tomean.jpg", year, (setting).c_str());
+   c11->SaveAs(p_endcap_m_chi2_tomean);
+   char p_endcap_m_chi2_tomean_inout[300];
+   sprintf (p_endcap_m_chi2_tomean_inout, "/home/darold/html/shape/%d/%s_endcap_m_chi2_tomean_inout.jpg", year, (setting).c_str());
+   c11_bis->SaveAs(p_endcap_m_chi2_tomean_inout);
+   char p_barrel_ratio_chi2[300];
+   sprintf (p_barrel_ratio_chi2, "/home/darold/html/shape/%d/%s_barrel_ratio_chi2.jpg", year, (setting).c_str());
+   c12->SaveAs(p_barrel_ratio_chi2);
+   char p_endcap_ratio_ch2[300];
+   sprintf (p_endcap_ratio_ch2, "/home/darold/html/shape/%d/%s_endcap_ratio_ch2.jpg", year, (setting).c_str());
+   c13->SaveAs(p_endcap_ratio_ch2);
+   char p_endcap_ratio_ch2_inout[300];
+   sprintf (p_endcap_ratio_ch2_inout, "/home/darold/html/shape/%d/%s_endcap_ratio_ch2_inout.jpg", year, (setting).c_str());
+   c13_bis->SaveAs(p_endcap_ratio_ch2_inout);
+
+
+
    TCanvas * c14 = new TCanvas("c14","c14",0,0,1600,1000);
    c14->cd();
    h_nevents_b->SetMinimum(2.);
@@ -614,24 +674,14 @@ void drawhisto() {
 
 
 
-   c1->SaveAs("plots/barrel_chi2.jpg");
-   c2->SaveAs("plots/barrel_parameters.pdf");
-   c3->SaveAs("plots/endcap_m_chi2.jpg");
-   c4->SaveAs("plots/endcap_m_parameters.jpg");
-   c5->SaveAs("plots/endcap_p_chi2.jpg");
-   c6->SaveAs("plots/endcap_p_parameters.jpg");
-   c7->SaveAs("plots/barrel_1d_distribution_parameters.pdf");
-   c8->SaveAs("plots/endcap_1d_distribution_parameters.pdf");
-   c9->SaveAs("plots/barrel_chi2_tomean.jpg");
-   c10->SaveAs("plots/endcap_p_chi2_tomean.jpg");
-   c10_bis->SaveAs("plots/endcap_p_chi2_tomean_inout.jpg");
-   c11->SaveAs("plots/endcap_m_chi2_tomean.jpg");
-   c11_bis->SaveAs("plots/endcap_m_chi2_tomean_inout.jpg");
-   c12->SaveAs("plots/barrel_ratio_chi2.jpg");
-   c13->SaveAs("plots/endcap_ratio_chi2.jpg");
-   c13_bis->SaveAs("plots/endcap_ratio_chi2_inout.jpg");
-   c14->SaveAs("plots/nevents_b.pdf");
-   c15->SaveAs("plots/nevents_em.pdf");
-   c16->SaveAs("plots/nevents_ep.pdf");
+   char p_nevents_b[300];
+   sprintf (p_nevents_b, "/home/darold/html/shape/%d/%s_nevents_b.pdf", year, (setting).c_str());
+   c14->SaveAs(p_nevents_b);
+   char p_nevents_em[300];
+   sprintf (p_nevents_em, "/home/darold/html/shape/%d/%s_nevents_em.pdf", year, (setting).c_str());
+   c15->SaveAs(p_nevents_em);
+   char p_nevents_ep[300];
+   sprintf (p_nevents_ep, "/home/darold/html/shape/%d/%s_nevents_ep.pdf", year, (setting).c_str());
+   c16->SaveAs(p_nevents_ep);
 
 }

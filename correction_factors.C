@@ -26,7 +26,7 @@ double alphabeta(double* x, double*p){
 }
 
 
-void correction_factors() {
+void correction_factors(string path, int year) {
 
    float A_b=0;
    float t_0_b=0;
@@ -43,8 +43,11 @@ void correction_factors() {
    char name[20];
 
    //Open file with information on mean values of the parameters for the fitted alpha-beta functions
+   char file_meanpar[100];
+   sprintf (file_meanpar, "%s/standard_%d_meanpar.txt", (path).c_str(), year);
+
    ifstream txt_mean;
-   txt_mean.open("meanpar.txt");
+   txt_mean.open(file_meanpar);
 
    while ( kTRUE ) {
       txt_mean >> name >> A_b >> t_0_b >> alpha_b >> beta_b;
@@ -86,8 +89,11 @@ void correction_factors() {
       
    }
 
+   char file_corr_barrel[100];
+   sprintf (file_corr_barrel, "%d_corrections_barrel.txt", year);
+
    ofstream txt_file1;
-   txt_file1.open ("corrections_barrel.txt");
+   txt_file1.open (file_corr_barrel);
 
    for(int i=0; i<23; i++){
       txt_file1 << correction_b[i] << endl;
@@ -95,9 +101,11 @@ void correction_factors() {
 
    txt_file1.close();
 
+   char file_corr_endcap[100];
+   sprintf (file_corr_endcap, "%d_corrections_endcap.txt", year);
 
    ofstream txt_file2;
-   txt_file2.open ("corrections_endcap.txt");
+   txt_file2.open (file_corr_endcap);
 
    for(int i=0; i<23; i++){
       txt_file2 << correction_e[i] << endl;

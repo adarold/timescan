@@ -34,7 +34,7 @@ int iz(int id) { return (id&0x4000)?(1):(-1); }
 int ix(int id) { return (id>>7)&0x7F; }
 int iy(int id) { return id&0x7F; }
 
-void fitter::Loop()
+void fitter::Loop(int year, int run_condition)
 {
    if (fChain == 0) return;
 
@@ -53,6 +53,12 @@ void fitter::Loop()
    //###############################################################################################################################
 
    string setting = "standard";
+   if (run_condition == 1) setting = "etaring";
+   if (run_condition == 2) setting = "etaring_fix";
+   if (run_condition == 3) setting = "supermodule_fix";
+   if (run_condition == 4) setting = "triggertower_fix";
+
+cout << year << " " << setting << endl;
 
    //Variables
    int  n_delays=23;
@@ -121,6 +127,7 @@ void fitter::Loop()
 
    //Open txt file with crystals rawid and saves it into a vector
    ifstream txt_rawid;
+   
    txt_rawid.open("rawid_list.txt");
 
    while ( kTRUE ) {
@@ -140,8 +147,11 @@ void fitter::Loop()
    float beta_b_etaring[171];
    int eta_npt=0;
 
+   char file_etaring_barrel[100];
+   sprintf (file_etaring_barrel, "%d_etaring_barrel.txt", year);
+
    ifstream txt_etabarrel;
-   txt_etabarrel.open("etaring_barrel.txt");
+   txt_etabarrel.open(file_etaring_barrel);
 
    while ( kTRUE ) {
       txt_etabarrel >> eta[eta_npt] >> A_b_etaring[eta_npt] >> t_0_b_etaring[eta_npt] >> alpha_b_etaring[eta_npt] >> beta_b_etaring[eta_npt];
@@ -159,8 +169,11 @@ void fitter::Loop()
    float beta_ep_etaring[40];
    int etaep_npt=0;
 
+   char file_etaring_endcapp[100];
+   sprintf (file_etaring_endcapp, "%d_etaring_endcapp.txt", year);
+
    ifstream txt_etaendcapp;
-   txt_etaendcapp.open("etaring_endcapp.txt");
+   txt_etaendcapp.open(file_etaring_endcapp);
 
    while ( kTRUE ) {
       txt_etaendcapp >> radius_p[etaep_npt] >> A_ep_etaring[etaep_npt] >> t_0_ep_etaring[etaep_npt] >> alpha_ep_etaring[etaep_npt] >> beta_ep_etaring[etaep_npt];
@@ -178,8 +191,11 @@ void fitter::Loop()
    float beta_em_etaring[40];
    int etaem_npt=0;
 
+   char file_etaring_endcapm[100];
+   sprintf (file_etaring_endcapm, "%d_etaring_endcapm.txt", year);
+
    ifstream txt_etaendcapm;
-   txt_etaendcapm.open("etaring_endcapm.txt");
+   txt_etaendcapm.open(file_etaring_endcapm);
 
    while ( kTRUE ) {
       txt_etaendcapm >> radius_m[etaem_npt] >> A_em_etaring[etaem_npt] >> t_0_em_etaring[etaem_npt] >> alpha_em_etaring[etaem_npt] >> beta_em_etaring[etaem_npt];
@@ -198,8 +214,11 @@ void fitter::Loop()
    float prod_alpha[npt];
    float prod_beta[npt];
 
+   char file_producer[100];
+   sprintf (file_producer, "%d_producer_info.txt", year);
+
    ifstream txt_producer;
-   txt_producer.open("producer_info.txt");
+   txt_producer.open(file_producer);
 
    while ( kTRUE ) {
       txt_producer >> prod_rawid[prod_npt] >> prod_A[prod_npt] >> prod_t_0[prod_npt] >> prod_alpha[prod_npt] >> prod_beta[prod_npt];
@@ -233,8 +252,11 @@ void fitter::Loop()
    float super_alpha[npt];
    float super_beta[npt];
 
+   char file_supermodule[100];
+   sprintf (file_supermodule, "%d_supermodule_info.txt", year);
+
    ifstream txt_supermod;
-   txt_supermod.open("supermodule_info.txt");
+   txt_supermod.open(file_supermodule);
 
    while ( kTRUE ) {
       txt_supermod >> super_rawid[super_npt] >> super_A[super_npt] >> super_t_0[super_npt] >> super_alpha[super_npt] >> super_beta[super_npt];
@@ -268,8 +290,11 @@ void fitter::Loop()
    float tt_alpha[npt];
    float tt_beta[npt];
 
+   char file_triggertower[100];
+   sprintf (file_triggertower, "%d_triggertower_info.txt", year);
+
    ifstream txt_tt;
-   txt_tt.open("triggertower_info.txt");
+   txt_tt.open(file_triggertower);
 
    while ( kTRUE ) {
       txt_tt >> tt_rawid[tt_npt] >> tt_A[tt_npt] >> tt_t_0[tt_npt] >> tt_alpha[tt_npt] >> tt_beta[tt_npt];
@@ -549,7 +574,7 @@ int nerrors=0;
 
 
 gStyle->SetOptStat(1);
-if(i==nu*7000){
+if(i == 7000 || i == 23456 || i == 70000) {
 TCanvas * c3 = new TCanvas("c3","c3",0,0,500,500);
 c3->cd();
 g->SetMinimum(-0.05);
@@ -557,13 +582,13 @@ g->SetMaximum(0.3);
 g->Draw("AP");
 function_alphabeta->SetLineColor(kRed);
 function_alphabeta->Draw("same");
-sprintf (path, "/home/darold/html/plot2018b/crystal_%d.pdf",rawid_value[i]);
+sprintf (path, "/home/darold/html/shape/%d/%s_crystal_%d.pdf", year, (setting).c_str(), rawid_value[i]);
 c3->SaveAs(path);
 }
 
 
       //2D parameter plots construction
-      if(i==nu*7000){
+      if(i == 7000 || i == 23456 || i == 70000) {
 
       nu++;
       A_mean=function_alphabeta->GetParameter(0);
@@ -643,7 +668,7 @@ c3->SaveAs(path);
       h_t_0_beta->GetYaxis()->SetTitle("Beta");
       h_t_0_beta->Draw("COLZ");
  
-      sprintf (path, "/home/darold/html/plot2018b/maps_%d.pdf",rawid_value[i]);
+      sprintf (path, "/home/darold/html/shape/%d/%s_maps_%d.pdf", year, (setting).c_str(), rawid_value[i]);
       c2->SaveAs(path);
 
       delete h_alpha_beta;
@@ -689,8 +714,11 @@ c3->SaveAs(path);
    }
 
    //Saves parameters for each crystal
+   char file_everycrystal[100];
+   sprintf (file_everycrystal, "%s_%d_everycrystal_par.txt", (setting).c_str(), year);
+
    ofstream txt_par;
-   txt_par.open ("everycrystal_par.txt");
+   txt_par.open (file_everycrystal);
 
      // txt_par << "crystal rawid" << "\t" << " A " << "\t" << " t_0 " << "\t" << " alpha " << "\t" << " beta " << endl;
 
@@ -702,8 +730,11 @@ c3->SaveAs(path);
 
    txt_par.close();
 
+   char file_everycrystal_err[100];
+   sprintf (file_everycrystal_err, "%s_%d_everycrystal_par_err.txt", (setting).c_str(), year);
+
    ofstream txt_par2;
-   txt_par2.open ("everycrystal_par_err.txt");
+   txt_par2.open (file_everycrystal_err);
 
       for(int i=0; i<npt; i++){
 
@@ -887,15 +918,16 @@ c3->SaveAs(path);
    }
    
    //Saves the average fitting parameter to an external file
-   ofstream txt_meanpar;
-   txt_meanpar.open ("meanpar.txt");
+   char file_meanpar[100];
+   sprintf (file_meanpar, "%s_%d_meanpar.txt", (setting).c_str(), year);
 
-      txt_meanpar << "Barrel" << "\t" << A_b_mean << "\t" << t_0_b_mean << "\t" << alpha_b_mean << "\t" << beta_b_mean << endl;
-      txt_meanpar << "Endcap" << "\t" << A_e_mean << "\t" << t_0_e_mean << "\t" << alpha_e_mean << "\t" << beta_e_mean << endl;
-      txt_meanpar << "Barrel_in" << "\t" << b_in[0] << "\t" << b_in[1] << "\t" << b_in[2] << "\t" << b_in[3] << endl;
-      txt_meanpar << "Barrel_out" << "\t" << b_out[0] << "\t" << b_out[1] << "\t" << b_out[2] << "\t" << b_out[3] << endl;
-      txt_meanpar << "Endcap_in" << "\t" << e_in[0] << "\t" << e_in[1] << "\t" << e_in[2] << "\t" << e_in[3] << endl;
-      txt_meanpar << "Endcap_out" << "\t" << e_out[0] << "\t" << e_out[1] << "\t" << e_out[2] << "\t" << e_out[3] << endl;
+   ofstream txt_meanpar;
+   txt_meanpar.open (file_meanpar);
+
+      //Barrel
+      txt_meanpar << A_b_mean << "\t" << t_0_b_mean << "\t" << alpha_b_mean << "\t" << beta_b_mean << endl;
+      //Endcap
+      txt_meanpar << A_e_mean << "\t" << t_0_e_mean << "\t" << alpha_e_mean << "\t" << beta_e_mean << endl;
 
    txt_meanpar.close();
 
@@ -1035,7 +1067,10 @@ if(black_list_test==0) cout << rawid_value[i] << endl;
 
   
    //Saves histograms
-   TFile *f = new TFile("histograms.root","update");
+   char file_histograms[100];
+   sprintf (file_histograms, "%s_%d_histograms.root", (setting).c_str(), year);
+
+   TFile *f = new TFile(file_histograms,"update");
 
       h1_b_chi->Write("",TObject::kOverwrite);
       h1_b_A->Write("",TObject::kOverwrite);

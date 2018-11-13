@@ -19,7 +19,7 @@ int izz(int id) { return (id&0x4000)?(1):(-1); }
 int ixx(int id) { return (id>>7)&0x7F; }
 int iyy(int id) { return id&0x7F; }
 
-void tt::Loop()
+void tt::Loop(string path, int year)
 {
 //   In a ROOT session, you can do:
 //      root> .L tt.C
@@ -59,9 +59,11 @@ void tt::Loop()
    int cry_y=0;
    int cry_z=0;
 
+   char file_everycrystalpar[100];
+   sprintf (file_everycrystalpar, "%s/standard_%d_everycrystal_par.txt", (path).c_str(), year);
+
    ifstream txt_par;
-//   txt_par.open("everycrystal_par.txt");
-   txt_par.open("everycrystal_par_standard.txt");
+   txt_par.open(file_everycrystalpar);
 
    while ( kTRUE ) {
       txt_par >> rawid_value[npt] >> A[npt] >> t_0[npt] >> alpha[npt] >> beta[npt];
@@ -151,6 +153,7 @@ void tt::Loop()
                m_m[key_ret]=v_valm;
 
             }
+//rawid abs(delta_t) delta_t average_t_in_triggertower	
 if(fabs( t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]) > 4) cout << rawid_value[i] << "   " << fabs( t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]) << "   " << t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0] << "   " << m_f[key_ret].valf[2]/m_f[key_ret].valf[0] << endl;
 
 h_delay->Fill(t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]);
@@ -164,8 +167,11 @@ h_delay->Fill(t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]);
    }
 
    //Output file with TT average of the parameters
+   char file_triggertower[100];
+   sprintf (file_triggertower, "%d_triggertower_info.txt", year);
+
    ofstream txt_ttinfo;
-   txt_ttinfo.open ("triggertower_info.txt");
+   txt_ttinfo.open (file_triggertower);
 
    for(int i=0; i<npt; i++){
 
@@ -245,8 +251,12 @@ gStyle->SetOptStat(0);
    h_delay->SetFillColorAlpha(kBlue,0.35);
    h_delay->Draw();
 
+   char pathc[1000];
+   char pathc1[1000];
+   sprintf (pathc, "/home/darold/html/shape/%d/timedisplacement.pdf", year);
+   sprintf (pathc1, "/home/darold/html/shape/%d/timedisplacement_histo.pdf", year);
 
-   c->SaveAs("plots/timedisplacement.pdf");
-   c1->SaveAs("plots/timedisplacement_histo.pdf");
+   c->SaveAs(pathc);
+   c1->SaveAs(pathc1);
 
 }

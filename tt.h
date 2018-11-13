@@ -50,6 +50,9 @@ public :
    Char_t          det[6];
    Char_t          crate[7];
 
+   TString         filepath;
+   Int_t           year;
+
    // List of branches
    TBranch        *b_fed;   //!
    TBranch        *b_tcc;   //!
@@ -80,13 +83,13 @@ public :
    TBranch        *b_det;   //!
    TBranch        *b_crate;   //!
 
-   tt(TTree *tree=0);
+   tt(string path="");
    virtual ~tt();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop();
+   virtual void     Loop(string path, Int_t year);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -94,8 +97,13 @@ public :
 #endif
 
 #ifdef tt_cxx
-tt::tt(TTree *tree) : fChain(0) 
+tt::tt(string path) : fChain(0) 
 {
+   TTree *tree=0;
+
+   char file_ecal[100];
+   sprintf (file_ecal, "%s/EcalTPGParam.root/tpgmap", (path).c_str());
+
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
@@ -114,7 +122,7 @@ tt::tt(TTree *tree) : fChain(0)
       // The following code should be used if you want this class to access a chain
       // of trees.
       TChain * chain = new TChain("t","");
-      chain->Add("EcalTPGParam.root/tpgmap");
+      chain->Add(file_ecal);
       tree = chain;
 #endif // SINGLE_TREE
 

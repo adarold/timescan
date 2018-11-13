@@ -29,6 +29,7 @@ public :
    Double_t        square[10];
 
    TString 	   filepath;
+   Int_t	   year;
 
    // List of branches
    TBranch        *b_t_rawid;   //!
@@ -37,13 +38,13 @@ public :
    TBranch        *b_t_pulse;   //!
    TBranch        *b_t_square;   //!
 
-   fitter(string path="");
+   fitter(Int_t year, string path="");
    virtual ~fitter();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop();
+   virtual void     Loop(Int_t year, Int_t run_condition);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
@@ -51,16 +52,20 @@ public :
 #endif
 
 #ifdef fitter_cxx
-fitter::fitter(string path) : fChain(0), filepath(path) 
+fitter::fitter(Int_t year, string path) : fChain(0), filepath(path) 
 {
    TTree *tree=0;
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
 
+   char file_event[100];
+   sprintf (file_event, "%s/event_%d.root", (path).c_str(), year);
+
+
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject((path+"/event.root").c_str());
       if (!f || !f->IsOpen()) {
-         f = new TFile((path+"/event.root").c_str());
+         f = new TFile(file_event);
       }
       f->GetObject("tree",tree);
 

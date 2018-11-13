@@ -17,7 +17,7 @@ int ix(int id) { return (id>>7)&0x7F; }
 int iy(int id) { return id&0x7F; }
 
 
-void ringpar(){
+void ringpar(string path, int year){
 
    int rawid_value[80000];
    float A[80000];
@@ -28,8 +28,11 @@ void ringpar(){
 
 
    //Reads fitted parameters for all the crystals
+   char file_everycrystalpar[100];
+   sprintf (file_everycrystalpar, "%s/standard_%d_everycrystal_par.txt", (path).c_str(), year);
+
    ifstream txt_par;
-   txt_par.open("everycrystal_par.txt");
+   txt_par.open(file_everycrystalpar);
 
    while ( kTRUE ) {
       txt_par >> rawid_value[npt] >> A[npt] >> t_0[npt] >> alpha[npt] >> beta[npt];
@@ -142,8 +145,11 @@ void ringpar(){
 
 
    //Saves parameters in three .txt files (EB, EE+, EE-)
+   char file_etaring_barrel[100];
+   sprintf (file_etaring_barrel, "%d_etaring_barrel.txt", year);
+
    ofstream txt_barrel;
-   txt_barrel.open ("etaring_barrel.txt");
+   txt_barrel.open (file_etaring_barrel);
 
    for(int i=0; i<171; i++){
       if(i!=85) txt_barrel << i-85 << "\t" << A_b_mean[i]/(1.*nevents_b[i]) << "\t" << t_0_b_mean[i]/(1.*nevents_b[i]) << "\t" << alpha_b_mean[i]/(1.*nevents_b[i]) << "\t" << beta_b_mean[i]/(1.*nevents_b[i])<< endl;
@@ -152,9 +158,11 @@ void ringpar(){
 
    txt_barrel.close();
 
+   char file_etaring_endcapp[100];
+   sprintf (file_etaring_endcapp, "%d_etaring_endcapp.txt", year);
 
    ofstream txt_endcapp;
-   txt_endcapp.open ("etaring_endcapp.txt");
+   txt_endcapp.open (file_etaring_endcapp);
 
    for(int i=0; i<40; i++){
       txt_endcapp << 11+i << "\t" << A_ep_mean[i]/(1.*nevents_ep[i]) << "\t" << t_0_ep_mean[i]/(1.*nevents_ep[i]) << "\t" << alpha_ep_mean[i]/(1.*nevents_ep[i]) << "\t" << beta_ep_mean[i]/(1.*nevents_ep[i])<< endl;
@@ -162,9 +170,11 @@ void ringpar(){
 
    txt_endcapp.close();
 
+   char file_etaring_endcapm[100];
+   sprintf (file_etaring_endcapm, "%d_etaring_endcapm.txt", year);
 
    ofstream txt_endcapm;
-   txt_endcapm.open ("etaring_endcapm.txt");
+   txt_endcapm.open (file_etaring_endcapm);
 
    for(int i=0; i<40; i++){
       txt_endcapm << 11+i << "\t" << A_em_mean[i]/(1.*nevents_em[i]) << "\t" << t_0_em_mean[i]/(1.*nevents_em[i]) << "\t" << alpha_em_mean[i]/(1.*nevents_em[i]) << "\t" << beta_em_mean[i]/(1.*nevents_em[i])<< endl;

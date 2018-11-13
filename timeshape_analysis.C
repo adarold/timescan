@@ -35,11 +35,12 @@ double alphabeta(double* x, double*p){
 
 }
 
-void timeshape_analysis::Loop()
+void timeshape_analysis::Loop(int year, int correction)
 {
 
    if (fChain == 0) return;
 
+cout << year << " " << correction << endl;
    
    //Branches
    fChain->SetBranchStatus("*",0);
@@ -49,11 +50,13 @@ void timeshape_analysis::Loop()
    fChain->SetBranchStatus("pulse",1);
    fChain->SetBranchStatus("barrel",1);
    fChain->SetBranchStatus("ene",1);
+   fChain->SetBranchStatus("time",1);
 
 
    //External input options
    //string setting="nocorr"; //if nocorr, no correction on the integral normalisation is applied, do this for the first run
-   string setting="corr"; 
+   string setting="nocorr"; 
+   if (correction == 1) setting="corr"; 
 
 
    //Histograms
@@ -93,9 +96,12 @@ void timeshape_analysis::Loop()
    //Reads the corrections on the normalization integral
    //Remove the variable correction[i] inside the filling cycle to get the raw data
    if(setting=="corr"){
+
+      char file_corr_barrel[100];
+      sprintf (file_corr_barrel, "%d_corrections_barrel.txt", year);
       
       ifstream txt_corrections_barrel;
-      txt_corrections_barrel.open("corrections_barrel.txt");
+      txt_corrections_barrel.open(file_corr_barrel);
 
       while ( kTRUE ) {
          txt_corrections_barrel >> correction_barrel[npt_cb];
@@ -105,8 +111,11 @@ void timeshape_analysis::Loop()
 
       txt_corrections_barrel.close();
 
+      char file_corr_endcap[100];
+      sprintf (file_corr_barrel, "%d_corrections_endcap.txt", year);
+      
       ifstream txt_corrections_endcap;
-      txt_corrections_endcap.open("corrections_endcap.txt");
+      txt_corrections_endcap.open(file_corr_barrel);
 
       while ( kTRUE ) {
          txt_corrections_endcap >> correction_endcap[npt_ce];
@@ -127,7 +136,7 @@ void timeshape_analysis::Loop()
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
          //Main analysis
-
+         //2017
             if(run==305745){
 
                if(lumisec>=5  && lumisec<=11){ delay=-11; cindex=0;}
@@ -163,7 +172,100 @@ void timeshape_analysis::Loop()
             if(run==305754){ delay=+6;  cindex=17;}
             if(run==305755){ delay=+8;  cindex=19;}
             if(run==305756){ delay=+10; cindex=21;}
+         
+         //20181
+            if(run==318661){
 
+               if(lumisec>=1   && lumisec<=12){ delay=-10; cindex=1;}
+               if(lumisec>=16  && lumisec<=20){ delay=-8; cindex=3;}
+               if(lumisec>=23  && lumisec<=27){ delay=-6; cindex=5;}
+               if(lumisec>=31  && lumisec<=34){ delay=-4; cindex=7;}
+               if(lumisec>=38  && lumisec<=42){ delay=-2; cindex=9;}
+               if(lumisec>=45  && lumisec<=49){ delay=0; cindex=11;}
+               if(lumisec>=53  && lumisec<=57){ delay=+2; cindex=13;}
+               if(lumisec>=60  && lumisec<=65){ delay=+4; cindex=15;}
+               if(lumisec>=67  && lumisec<=71){ delay=+6; cindex=17;}
+               if(lumisec>=75  && lumisec<=79){ delay=+8; cindex=19;}
+               if(lumisec>=82  && lumisec<=86){ delay=+10; cindex=21;}
+
+            }
+
+            if(run==318662){
+
+               if(lumisec>=1   && lumisec<=6 ){ delay=-11; cindex=0;}
+               if(lumisec>=13  && lumisec<=15){ delay=-9; cindex=2;}
+               if(lumisec>=19  && lumisec<=23){ delay=-7; cindex=4;}
+               if(lumisec>=26  && lumisec<=30){ delay=-5; cindex=6;}
+               if(lumisec>=33  && lumisec<=37){ delay=-3; cindex=8;}
+               if(lumisec>=41  && lumisec<=47){ delay=-1; cindex=10;}
+
+            }
+
+            if(run==318663){
+
+               if(lumisec>=1   && lumisec<=6 ){ delay=-1; cindex=10;}
+               if(lumisec>=12  && lumisec<=15){ delay=+1; cindex=12;}
+               if(lumisec>=19  && lumisec<=23){ delay=+3; cindex=14;}
+               if(lumisec>=27  && lumisec<=32){ delay=+5; cindex=16;}
+               if(lumisec>=36  && lumisec<=40){ delay=+7; cindex=18;}
+               if(lumisec>=43  && lumisec<=48){ delay=+9; cindex=20;}
+               if(lumisec>=52  && lumisec<=56){ delay=+11; cindex=22;}
+
+            }
+
+         //20182
+            if (time > 0){
+            
+               if(run==323395){
+               
+                  if(lumisec>=55 && lumisec<=61){ delay=+2;  cindex=13;}
+                  if(lumisec>=64 && lumisec<=71){ delay=+4;  cindex=15;}
+                  if(lumisec>=75 && lumisec<=82){ delay=+6;  cindex=17;}
+                  if(lumisec>=85 && lumisec<=91){ delay=+8;  cindex=19;}
+                  if(lumisec>=95 && lumisec<=102){ delay=+10;  cindex=21;}
+            
+               }
+            
+               if(run==323398){
+
+                  if(lumisec>=35  && lumisec<=40) { delay=+1; cindex=12;}
+                  if(lumisec>=43  && lumisec<=50) { delay=+3; cindex=14;}
+                  if(lumisec>=54  && lumisec<=61) { delay=+5; cindex=16;}
+                  if(lumisec>=64  && lumisec<=71) { delay=+7; cindex=18;}
+                  if(lumisec>=75  && lumisec<=81) { delay=+9; cindex=20;}
+                  if(lumisec>=84  && lumisec<=92) { delay=+11; cindex=22;}
+
+               }
+
+            }else{
+
+               if(run==323395){
+
+                  if(lumisec>=2  && lumisec<=6) { delay=-10; cindex=1;}
+                  if(lumisec>=11 && lumisec<=17){ delay=-8;  cindex=3;}
+                  if(lumisec>=21 && lumisec<=27){ delay=-6;  cindex=5;}
+                  if(lumisec>=31 && lumisec<=37){ delay=-4;  cindex=7;}
+                  if(lumisec>=40 && lumisec<=45){ delay=-2;  cindex=9;}
+
+               }
+
+               if(run==323397){
+
+                  if(lumisec>=1  && lumisec<=7) { delay=-11; cindex=0;}
+                  if(lumisec>=11 && lumisec<=17){ delay=-9;  cindex=2;}
+                  if(lumisec>=21 && lumisec<=28){ delay=-7;  cindex=4;}
+
+               }
+
+               if(run==323398){
+
+                  if(lumisec>=10  && lumisec<=15) { delay=-5; cindex=6;}
+                  if(lumisec>=19  && lumisec<=23) { delay=-3; cindex=8;}
+                  if(lumisec>=27  && lumisec<=32) { delay=-1; cindex=10;}
+
+               }
+
+            }
  
          if(delay==-99) continue; //Allows to skip the lumisections where the delay is not defined
 
@@ -221,8 +323,10 @@ void timeshape_analysis::Loop()
 
 
    //Writes all the information of the map into a root tree file
-   TFile * file = new TFile("event.root","recreate");
+   char filename[100];
+   sprintf (filename, "event_%d.root", year);
 
+   TFile * file = new TFile(filename,"recreate");
    TTree * tree = new TTree("tree","tree");
 
    int t_rawid=0;
