@@ -31,6 +31,7 @@ The resulting ntuples (~39G) can be found (at least at the moment) at:
 2) RUNNING THE ANALYSIS CODE
 
 VERSION 1: OPTIMISED
+
 There is a launch_all.sh script that does all the job described in Version 0. The code is run for all the three datasets: October 2017, June 2018 and September 2018. The plots for the single year and the comparison ones are produced and saved.
 
 VERSION 0: OLD BUT USEFUL TO UNDERSTAND WHAT HAPPENS
