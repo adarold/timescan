@@ -28,6 +28,15 @@ The resulting ntuples (~39G) can be found (at least at the moment) at:
     root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/180121_141306/0000/
 
 ---
+VERSION 1: OPTIMISED
+
+2) There is a launch_all.sh script
+
+
+
+
+VERSION 2: OLD BUT USEFUL TO UNDERSTAND WHAT HAPPENS
+
 
 2) RUNNING THE ANALYSIS CODE
 
