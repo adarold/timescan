@@ -28,19 +28,12 @@ The resulting ntuples (~39G) can be found (at least at the moment) at:
     root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/180121_141306/0000/
 
 ---
-***
 2) RUNNING THE ANALYSIS CODE
-********
 
 VERSION 1: OPTIMISED
-
 There is a launch_all.sh script that does all the job described in Version 0. The code is run for all the three datasets: October 2017, June 2018 and September 2018. The plots for the single year and the comparison ones are produced and saved.
 
----
-
 VERSION 0: OLD BUT USEFUL TO UNDERSTAND WHAT HAPPENS
-
-
 
 The launch.sh file allows to turn either on or off the execution of some of the scripts. All the ntuples are analysed through a makeclass method, so that two files (.C and .h) are created. To allow the scripts to be compiled and run, the files #run.C are exploited.
 
