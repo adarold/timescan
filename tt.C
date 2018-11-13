@@ -8,6 +8,7 @@
 #include "TGraphErrors.h"
 #include "TF1.h"
 #include "TMath.h"
+#include "TLine.h"
 
 
 int zside(int id) { return (id&0x10000)?(1):(-1); }
@@ -18,6 +19,20 @@ int iphi(int id) { return id&0x1FF; }
 int izz(int id) { return (id&0x4000)?(1):(-1); }
 int ixx(int id) { return (id>>7)&0x7F; }
 int iyy(int id) { return id&0x7F; }
+
+double alphabeta(double* x, double*p){
+
+   double fitval;
+
+   if( ( 1+(x[0]-p[1]) / (p[2]*p[3]) ) > 0. ){
+      fitval = p[0] * pow(1 + (x[0]-p[1]) / (p[2]*p[3]) , p[2] ) * exp ( - (x[0]-p[1]) / p[3]);
+   }else{
+      fitval = 0;
+   }
+
+   return fitval;
+
+}
 
 void tt::Loop(string path, int year)
 {
@@ -131,6 +146,8 @@ void tt::Loop(string path, int year)
    //Creates map for the maximum difference between the mean value and a fitted value of t_0 for a certain TT
 
    TH1F * h_delay = new TH1F("h_delay","h_delay", 100, -7, 7);
+
+   int drawmax = 0;
    
    struct valuesm {float valm[1];};
    map<int, valuesm> m_m;
@@ -153,8 +170,50 @@ void tt::Loop(string path, int year)
                m_m[key_ret]=v_valm;
 
             }
-//rawid abs(delta_t) delta_t average_t_in_triggertower	
-if(fabs( t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]) > 4) cout << rawid_value[i] << "   " << fabs( t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]) << "   " << t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0] << "   " << m_f[key_ret].valf[2]/m_f[key_ret].valf[0] << endl;
+
+            if(fabs( t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]) > 5) {
+
+               //rawid abs(delta_t) delta_t average_t_in_triggertower	
+               cout << rawid_value[i] << "   " << fabs( t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]) << "   " << t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0] << "   " << m_f[key_ret].valf[2]/m_f[key_ret].valf[0] << endl;
+
+               if (drawmax<2){
+ 
+                  drawmax++;
+ 
+                  TF1 *function_alphabeta = new TF1("function_alphabeta", alphabeta, -11, 236, 4);
+                  function_alphabeta->FixParameter(0, A[i]);
+                  function_alphabeta->FixParameter(1, t_0[i]);
+                  function_alphabeta->FixParameter(2, alpha[i]);
+                  function_alphabeta->FixParameter(3, beta[i]);
+
+                  char plot_title[300];
+                  sprintf (plot_title, "Crystal %d", rawid_value[i]);
+
+                  TLine * l1 = new TLine (t_0[i], -0.05, t_0[i], 0.3);
+                  TLine * l2 = new TLine (m_f[key_ret].valf[2]/m_f[key_ret].valf[0], -0.05, m_f[key_ret].valf[2]/m_f[key_ret].valf[0], 0.3);
+
+                  TCanvas * ct1 = new TCanvas("ct1", "ct1", 0, 0, 500, 500);
+                  ct1->cd();
+                  function_alphabeta->SetMinimum(-0.05); 
+                  function_alphabeta->SetMaximum(0.3); 
+                  function_alphabeta->SetTitle(plot_title); 
+                  function_alphabeta->Draw();
+                  l1->SetLineColor(kBlue);
+                  l1->SetLineStyle(2);
+                  l1->SetLineWidth(4);
+                  l1->Draw("same");
+                  l2->SetLineColor(kRed);
+                  l2->SetLineStyle(2);
+                  l2->SetLineWidth(4);
+                  l2->Draw("same");
+
+                  char pathct1[1000];
+                  sprintf (pathct1, "/home/darold/html/shape/%d/shifted_crystal_%d.pdf", year, rawid_value[i]);
+                  ct1->SaveAs(pathct1);
+
+               }
+
+            }
 
 h_delay->Fill(t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]);
 
@@ -240,13 +299,15 @@ gStyle->SetOptStat(0);
    hm->SetTitle("Max time displacement from average for TT -side");
    hm->Draw("colz");
 
+   char histo_title[300];
+   sprintf (histo_title, "Time displacement from average for TT - %d", year);
 
    TCanvas * c1 = new TCanvas("c1","c1",0,0,500,500);
    c1->cd();
    h_delay->GetXaxis()->SetTitleSize(0.06);
    h_delay->GetXaxis()->SetTitleOffset(0.7);
    h_delay->GetXaxis()->SetTitle("#Delta t (ns)");
-   h_delay->SetTitle("Time displacement from average for TT - 2017");
+   h_delay->SetTitle(histo_title);
    h_delay->SetLineColor(kBlue);
    h_delay->SetFillColorAlpha(kBlue,0.35);
    h_delay->Draw();
