@@ -584,6 +584,7 @@ function_alphabeta->SetLineColor(kRed);
 function_alphabeta->Draw("same");
 sprintf (path, "/home/darold/html/shape/%d/%s_crystal_%d.pdf", year, (setting).c_str(), rawid_value[i]);
 c3->SaveAs(path);
+delete c3;
 }
 
 
