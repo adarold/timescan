@@ -53,7 +53,7 @@ void drawhisto(string path, int year, int run_condition) {
    //Draws histograms
 
    gStyle->SetOptStat(kFALSE);
-
+   gStyle->SetPalette(1);
 
    TCanvas * c1 = new TCanvas("c1","c1",0,0,1600,1000);
    c1->cd();
@@ -627,7 +627,7 @@ void drawhisto(string path, int year, int run_condition) {
    sprintf (p_endcap_ratio_ch2_inout, "/home/darold/html/shape/%d/%s_endcap_ratio_ch2_inout.jpg", year, (setting).c_str());
    c13_bis->SaveAs(p_endcap_ratio_ch2_inout);
 
-
+   gStyle->SetPalette(54);
 
    TCanvas * c14 = new TCanvas("c14","c14",0,0,1600,1000);
    c14->cd();
