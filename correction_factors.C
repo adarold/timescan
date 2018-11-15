@@ -50,12 +50,8 @@ void correction_factors(string path, int year) {
    txt_mean.open(file_meanpar);
 
    while ( kTRUE ) {
-      txt_mean >> name >> A_b >> t_0_b >> alpha_b >> beta_b;
-      txt_mean >> name >> A_e >> t_0_e >> alpha_e >> beta_e;
-      txt_mean >> name >> b_in[0] >> b_in[1] >> b_in[2] >> b_in[3];
-      txt_mean >> name >> b_out[0] >> b_out[1] >> b_out[2] >> b_out[3];
-      txt_mean >> name >> e_in[0] >> e_in[1] >> e_in[2] >> e_in[3];
-      txt_mean >> name >> e_out[0] >> e_out[1] >> e_out[2] >> e_out[3];
+      txt_mean >> A_b >> t_0_b >> alpha_b >> beta_b;
+      txt_mean >> A_e >> t_0_e >> alpha_e >> beta_e;
       if ( ! txt_mean.good() ) break;
    }
 
