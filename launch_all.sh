@@ -8,7 +8,7 @@ for j in 2017 20181 20182; do
 
   #Execute timeshape_analysis the first time
   CORR=0
-  echo "Analysing all the collected data for $YEAR whit corr=$CORR, this could take a while..."
+  echo "Analysing all the collected data for $YEAR with corr=$CORR, this could take a while..."
   root-6.02 -l -q -b "run.C ($YEAR,$CORR)"
 
   if [[ -e event_${YEAR}.root ]]; then
@@ -22,7 +22,7 @@ for j in 2017 20181 20182; do
   echo " "
 
   RUN_CONDITION=0
-  echo "Fitting all the crystals to obtain the pulse shapes for $YEAR whit corr=$CORR. As output, some control histograms are produced. This could take a while..."
+  echo "Fitting all the crystals to obtain the pulse shapes for $YEAR with corr=$CORR. As output, some control histograms are produced. This could take a while..."
   root-6.02 -l -q -b "frun.C ($YEAR,\"$DIR\",$RUN_CONDITION)"
   if [[ -e standard_${YEAR}_histograms.root && -e standard_${YEAR}_meanpar.txt && -e standard_${YEAR}_everycrystal_par.txt ]]; then
     echo "File standard_${YEAR}_histograms.root and standard_${YEAR}_meanpar.txt and standard_${YEAR}_everycrystal_par.txt have been created."
@@ -48,7 +48,7 @@ for j in 2017 20181 20182; do
 
   #Execute timeshape_analysis with corrections applied for integral mismatch
   CORR=1
-  echo "Analysing all the collected data for $YEAR whit corr=$CORR, this could take a while..."
+  echo "Analysing all the collected data for $YEAR with corr=$CORR, this could take a while..."
   root-6.02 -l -q -b "run.C ($YEAR,$CORR)"
   if [[ -e event_${YEAR}.root ]]; then
     echo "File event_${YEAR}.root has been created."
@@ -62,7 +62,7 @@ for j in 2017 20181 20182; do
 
   #Runs fitter the standard configuration
   RUN_CONDITION=0
-  echo "Fitting all the crystals to obtain the pulse shapes for $YEAR whit corr=$CORR. As output, some control histograms are produced. This could take a while..."
+  echo "Fitting all the crystals to obtain the pulse shapes for $YEAR with corr=$CORR. As output, some control histograms are produced. This could take a while..."
   root-6.02 -l -q -b "frun.C ($YEAR,\"$DIR\",$RUN_CONDITION)"
   if [[ -e standard_${YEAR}_histograms.root && -e standard_${YEAR}_meanpar.txt ]]; then
     echo "File standard_${YEAR}_histograms.root and standard_${YEAR}_meanpar.txt have been created."
