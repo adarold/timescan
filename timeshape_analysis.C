@@ -213,59 +213,55 @@ cout << year << " " << correction << endl;
 
             }
 
-         //20182
-            if (time > 0){
-            
-               if(run==323395){
-               
-                  if(lumisec>=55 && lumisec<=61){ delay=+2;  cindex=13;}
-                  if(lumisec>=64 && lumisec<=71){ delay=+4;  cindex=15;}
-                  if(lumisec>=75 && lumisec<=82){ delay=+6;  cindex=17;}
-                  if(lumisec>=85 && lumisec<=91){ delay=+8;  cindex=19;}
-                  if(lumisec>=95 && lumisec<=102){ delay=+10;  cindex=21;}
-            
-               }
-            
-               if(run==323398){
+            //20182_test
 
-                  if(lumisec>=35  && lumisec<=40) { delay=+1; cindex=12;}
-                  if(lumisec>=43  && lumisec<=50) { delay=+3; cindex=14;}
-                  if(lumisec>=54  && lumisec<=61) { delay=+5; cindex=16;}
-                  if(lumisec>=64  && lumisec<=71) { delay=+7; cindex=18;}
-                  if(lumisec>=75  && lumisec<=81) { delay=+9; cindex=20;}
-                  if(lumisec>=84  && lumisec<=92) { delay=+11; cindex=22;}
+            if(run==323395){
 
-               }
-
-            }else{
-
-               if(run==323395){
-
-                  if(lumisec>=2  && lumisec<=6) { delay=-10; cindex=1;}
-                  if(lumisec>=11 && lumisec<=17){ delay=-8;  cindex=3;}
-                  if(lumisec>=21 && lumisec<=27){ delay=-6;  cindex=5;}
-                  if(lumisec>=31 && lumisec<=37){ delay=-4;  cindex=7;}
-                  if(lumisec>=40 && lumisec<=45){ delay=-2;  cindex=9;}
-
-               }
-
-               if(run==323397){
-
-                  if(lumisec>=1  && lumisec<=7) { delay=-11; cindex=0;}
-                  if(lumisec>=11 && lumisec<=17){ delay=-9;  cindex=2;}
-                  if(lumisec>=21 && lumisec<=28){ delay=-7;  cindex=4;}
-
-               }
-
-               if(run==323398){
-
-                  if(lumisec>=10  && lumisec<=15) { delay=-5; cindex=6;}
-                  if(lumisec>=19  && lumisec<=23) { delay=-3; cindex=8;}
-                  if(lumisec>=27  && lumisec<=32) { delay=-1; cindex=10;}
-
-               }
+               if(lumisec>=55 && lumisec<=61 && time>-8.){ delay=+2;  cindex=13;}
+               if(lumisec>=64 && lumisec<=71 && time>-8.){ delay=+4;  cindex=15;}
+               if(lumisec>=75 && lumisec<=82 && time>-8.){ delay=+6;  cindex=17;}
+               if(lumisec>=85 && lumisec<=91 && time>-8.){ delay=+8;  cindex=19;}
+               if(lumisec>=95 && lumisec<=102 && time>-8.){ delay=+10;  cindex=21;}
 
             }
+
+            if(run==323398){
+
+               if(lumisec>=35  && lumisec<=40 && time>-8.) { delay=+1; cindex=12;}
+               if(lumisec>=43  && lumisec<=50 && time>-8.) { delay=+3; cindex=14;}
+               if(lumisec>=54  && lumisec<=61 && time>-8.) { delay=+5; cindex=16;}
+               if(lumisec>=64  && lumisec<=71 && time>-8.) { delay=+7; cindex=18;}
+               if(lumisec>=75  && lumisec<=81 && time>-8.) { delay=+9; cindex=20;}
+               if(lumisec>=84  && lumisec<=92 && time>-8.) { delay=+11; cindex=22;}
+
+            }
+
+            if(run==323395){
+
+               if(lumisec>=2  && lumisec<=6 && time<8) { delay=-10; cindex=1;}
+               if(lumisec>=11 && lumisec<=17 && time<8){ delay=-8;  cindex=3;}
+               if(lumisec>=21 && lumisec<=27 && time<8){ delay=-6;  cindex=5;}
+               if(lumisec>=31 && lumisec<=37 && time<8){ delay=-4;  cindex=7;}
+               if(lumisec>=40 && lumisec<=45 && time<8){ delay=-2;  cindex=9;}
+
+            }
+
+            if(run==323397){
+
+               if(lumisec>=1  && lumisec<=7 && time<8) { delay=-11; cindex=0;}
+               if(lumisec>=11 && lumisec<=17 && time<8){ delay=-9;  cindex=2;}
+               if(lumisec>=21 && lumisec<=28 && time<8){ delay=-7;  cindex=4;}
+
+            }
+
+            if(run==323398){
+
+                if(lumisec>=10  && lumisec<=15 && time<8) { delay=-5; cindex=6;}
+                if(lumisec>=19  && lumisec<=23 && time<8) { delay=-3; cindex=8;}
+                if(lumisec>=27  && lumisec<=32 && time<8) { delay=-1; cindex=10;}
+
+            }
+
  
          if(delay==-99) continue; //Allows to skip the lumisections where the delay is not defined
 
