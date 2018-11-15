@@ -1,0 +1,11 @@
+*.d
+*.so
+*.pcm
+.*.swp
+etaring_20*
+etaring_fix_20*
+triggertower_fix_20*
+standard_20*
+supermodule_fix_20*
+201*
+event_201*
