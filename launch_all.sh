@@ -160,8 +160,4 @@ for i in 0 1 2 3 4; do
   root-6.02 -l -q -b "many_years.C (\"${DIR}\",${RUN_CONDITION})"
 done
 
-
-
-
-
 rmdir LSFJOB_*
