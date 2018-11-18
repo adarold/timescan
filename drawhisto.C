@@ -582,7 +582,7 @@ void drawhisto(string path, int year, int run_condition) {
    sprintf (p_barrel_chi2, "/home/darold/html/shape/%d/%s_barrel_chi2.jpg", year, (setting).c_str());
    c1->SaveAs(p_barrel_chi2);
    char p_barrel_parameters[300];
-   sprintf (p_barrel_parameters, "/home/darold/html/shape/%d/%s_barrel_parameters.pdf", year, (setting).c_str());
+   sprintf (p_barrel_parameters, "/home/darold/html/shape/%d/%s_barrel_parameters.jpg", year, (setting).c_str());
    c2->SaveAs(p_barrel_parameters);
    char p_endcap_m_chi2[300];
    sprintf (p_endcap_m_chi2, "/home/darold/html/shape/%d/%s_endcap_m_chi2.jpg", year, (setting).c_str());
@@ -675,13 +675,13 @@ void drawhisto(string path, int year, int run_condition) {
 
 
    char p_nevents_b[300];
-   sprintf (p_nevents_b, "/home/darold/html/shape/%d/%s_nevents_b.pdf", year, (setting).c_str());
+   sprintf (p_nevents_b, "/home/darold/html/shape/%d/%s_nevents_b.jpg", year, (setting).c_str());
    c14->SaveAs(p_nevents_b);
    char p_nevents_em[300];
-   sprintf (p_nevents_em, "/home/darold/html/shape/%d/%s_nevents_em.pdf", year, (setting).c_str());
+   sprintf (p_nevents_em, "/home/darold/html/shape/%d/%s_nevents_em.jpg", year, (setting).c_str());
    c15->SaveAs(p_nevents_em);
    char p_nevents_ep[300];
-   sprintf (p_nevents_ep, "/home/darold/html/shape/%d/%s_nevents_ep.pdf", year, (setting).c_str());
+   sprintf (p_nevents_ep, "/home/darold/html/shape/%d/%s_nevents_ep.jpg", year, (setting).c_str());
    c16->SaveAs(p_nevents_ep);
 
 }
