@@ -10,7 +10,7 @@ for j in 2017 20181 20182; do
   echo "Drawing plots"
   for i in 0 1 2 3 4; do
     RUN_CONDITION=$i
-  root-6.02 -l -q -b "drawhisto.C (\"${DIR}\",${YEAR},${RUN_CONDITION})"
+    root-6.02 -l -q -b "drawhisto.C (\"${DIR}\",${YEAR},${RUN_CONDITION})"
   done
 
 done
@@ -20,5 +20,3 @@ for i in 0 1 2 3 4; do
   RUN_CONDITION=$i
   root-6.02 -l -q -b "many_years.C (\"${DIR}\",${RUN_CONDITION})"
 done
-
-rmdir LSFJOB_*
