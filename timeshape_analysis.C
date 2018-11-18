@@ -262,6 +262,7 @@ cout << year << " " << correction << endl;
 
             }
 
+            if(run==323399 && time>-15) {delay=+0; cindex=11;}
  
          if(delay==-99) continue; //Allows to skip the lumisections where the delay is not defined
 

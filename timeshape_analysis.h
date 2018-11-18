@@ -181,6 +181,25 @@ if (year == 20182) {
       chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181007_105555/0000/templates_21.root/pulseDump/pulse_tree");
       chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181007_105555/0000/templates_22.root/pulseDump/pulse_tree");
       chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181007_105555/0000/templates_23.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_1.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_2.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_3.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_4.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_5.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_6.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_7.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_8.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_9.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_10.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_11.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_12.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_13.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_14.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_15.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_16.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_17.root/pulseDump/pulse_tree");
+      chain->Add("root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/181115_161856/0000/templates_18.root/pulseDump/pulse_tree");
+
 }
 
       tree = chain;
