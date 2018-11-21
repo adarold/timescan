@@ -273,9 +273,12 @@ h_delay->Fill(t_0[i] - m_f[key_ret].valf[2]/m_f[key_ret].valf[0]);
 
    }
 
-gStyle->SetOptFit(0);
-gStyle->SetOptStat(0);
-  
+
+   gStyle->SetOptFit(0);
+   gStyle->SetOptStat(0);
+   gStyle->SetPalette(1);
+
+ 
    TCanvas * c = new TCanvas("c","c",0,0,1000,500);
    c->Divide(2,1);
 
@@ -286,6 +289,7 @@ gStyle->SetOptStat(0);
    hp->GetYaxis()->SetTitleOffset(0.7);
    hp->GetXaxis()->SetTitle("ix");
    hp->GetYaxis()->SetTitle("iy");
+   hp->SetMaximum(17.);
    hp->SetTitle("Max time displacement from average for TT +side");
    hp->Draw("colz");
 
@@ -296,6 +300,7 @@ gStyle->SetOptStat(0);
    hm->GetYaxis()->SetTitleOffset(0.7);
    hm->GetXaxis()->SetTitle("ix");
    hm->GetYaxis()->SetTitle("iy");
+   hm->SetMaximum(17.);
    hm->SetTitle("Max time displacement from average for TT -side");
    hm->Draw("colz");
 
