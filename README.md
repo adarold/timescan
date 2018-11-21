@@ -75,7 +75,7 @@ In the same way, it is possible to perfom a fitting procedure that is dependent 
 2.4) Draw histograms
 
 There are two separate codes to be used. drawhisto.C simply draws in a somewhat nice way the results obtained with fitter (it can be implemented directly into fitter.C but then it takes a lot of time just to change histogram colours).
-The script compare.C provides the plots where the comparison with the standard pulse shape is performed. As input, the file standard_ps.txt is needed. This file can be obtained as explained in Section 3. To compare the data to different standard shapes corresponding to different runs, the file many_run.root must be used as input (the file has the same information as the standard_ps.txt one for more sets of runs and saved in a ntuple form).
+The script compare.C provides the plots where the comparison with the standard pulse shape is performed. As input, the file standard_ps.txt is needed. This file can be obtained as explained in Section 3. The many_years.C script draws comparison histograms between different runs (October 2017, June 2018 and September 2018).
 
 ---
 
