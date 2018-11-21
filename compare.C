@@ -3,6 +3,10 @@
 #include "TMath.h"
 #include "Riostream.h"
 
+//FIXME
+//OBSOLETE CODE, DO NOT USE
+//FIXME
+
 
 //Allows to compare the pulse shapes obtained with the standard analysis with those obtained in the 
 //time scan runs.
