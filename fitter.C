@@ -572,22 +572,6 @@ int nerrors=0;
       g->Fit("function_alphabeta","RQM","",-11,236);
       fitStatus =  g->Fit("function_alphabeta","RQM","",-11,236); //Checks the result of the fit
 
-
-gStyle->SetOptStat(1);
-if(i == 7000 || i == 23456 || i == 70000) {
-TCanvas * c3 = new TCanvas("c3","c3",0,0,500,500);
-c3->cd();
-g->SetMinimum(-0.05);
-g->SetMaximum(0.3);
-g->Draw("AP");
-function_alphabeta->SetLineColor(kRed);
-function_alphabeta->Draw("same");
-sprintf (path, "/home/darold/html/shape/%d/%s_crystal_%d.pdf", year, (setting).c_str(), rawid_value[i]);
-c3->SaveAs(path);
-delete c3;
-}
-
-
       //2D parameter plots construction
       if(i == 7000 || i == 23456 || i == 70000) {
 
