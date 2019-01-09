@@ -23,10 +23,6 @@ and subsequent folders, the analysed data are from run 305746 to run 305757. To 
 
 The standard code to retrieve the ntuples does not create a branch for the lumisection. To create ntuples with also this information, use the modified files PulseDump.cc and PulseDump.h presented in this page. They must replace the standard ones in: CMSSW_9_2_7/src/EcalReconstruction/EcalTools/plugins . The path in the process source of the file pulsedump_physymm_lonebunch.py must be changed according to the location of the datasets.
 
-The resulting ntuples (~39G) can be found (at least at the moment) at:
-
-    root://eosinfnts.ts.infn.it//eos/infnts/cms/store/user/adarold/ECAL/TimeScan/AlCaPhiSym/crab_TimeScan/180121_141306/0000/
-
 ---
 2) RUNNING THE ANALYSIS CODE
 
